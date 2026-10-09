@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+@theme {
+  --color-navy: #0b2545;
+  --color-navy-soft: #16365f;
+  --color-brass: #8d6232;
+  --color-brass-soft: #c4a574;
+  --color-paper: #f4f6f8;
+  --color-ink: #1c2430;
+  --color-muted: #5c6775;
+  --color-line: #e3e7ee;
+  --font-display: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-sans: "Source Sans 3", "Segoe UI", sans-serif;
+}
+
+html { overflow-x: clip; }
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+body {
+  overflow-x: clip;
+  font-family: var(--font-sans);
+  background: #fff;
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+}
+::selection { background: #e7d3b4; color: var(--color-navy); }
+:focus-visible { outline: 2px solid var(--color-brass); outline-offset: 3px; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  border-radius: .375rem;
+  padding: .7rem 1.15rem;
+  font-weight: 600;
+  font-size: .95rem;
+  line-height: 1.2;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+}
+.btn-primary { background: var(--color-navy); color: #fff; }
+.btn-primary:hover { background: var(--color-navy-soft); }
+.btn-brass { background: var(--color-brass); color: #fff; }
+.btn-brass:hover { background: #744f28; }
+.btn-outline {
+  border: 1px solid var(--color-line);
+  background: #fff;
+  color: var(--color-navy);
+}
+.btn-outline:hover { border-color: var(--color-navy); }
+.btn-outline-light {
+  border: 1px solid rgba(255,255,255,.45);
+  color: #fff;
+}
+.btn-outline-light:hover { background: rgba(255,255,255,.1); }
+.btn-light { background: #fff; color: var(--color-navy); }
+.btn-light:hover { background: #f3f4f6; }
+
+.field {
+  margin-top: .4rem;
+  width: 100%;
+  border: 1px solid var(--color-line);
+  background: #fff;
+  border-radius: .375rem;
+  padding: .7rem .85rem;
+  color: var(--color-ink);
+}
+.field:focus {
+  border-color: var(--color-navy);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(11, 37, 69, .12);
+}
+.search-field {
+  margin-top: 0;
+  padding-top: 0.65rem;
+  padding-bottom: 0.65rem;
+  padding-left: 2.85rem;
+  padding-right: 0.9rem;
+}
+
+.prose-copy p + p { margin-top: 1rem; }
