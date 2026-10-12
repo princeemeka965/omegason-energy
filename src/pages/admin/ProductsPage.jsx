@@ -14,6 +14,7 @@ export default function ProductsPage() {
   const [query, setQuery] = useState('')
   const [pages, setPages] = useState({})
   const [pendingDelete, setPendingDelete] = useState(null)
+  const [deletingId, setDeletingId] = useState('')
   const [actionError, setActionError] = useState('')
 
   useEffect(() => {
@@ -167,22 +168,27 @@ export default function ProductsPage() {
                           <div className="flex items-center justify-end gap-2">
                             {pendingDelete === product.id ? (
                               <>
-                                <button type="button" className="text-sm font-semibold text-muted" onClick={() => setPendingDelete(null)}>Cancel</button>
+                                <button type="button" className="text-sm font-semibold text-muted disabled:opacity-40" disabled={deletingId === product.id} onClick={() => setPendingDelete(null)}>Cancel</button>
                                 <button
                                   type="button"
-                                  className="bg-red-700 px-2.5 py-1.5 text-sm font-semibold text-white"
+                                  className="bg-red-700 px-2.5 py-1.5 text-sm font-semibold text-white disabled:cursor-wait disabled:opacity-60"
+                                  disabled={deletingId === product.id}
+                                  aria-busy={deletingId === product.id}
                                   onClick={async () => {
                                     setActionError('')
+                                    setDeletingId(product.id)
                                     try {
                                       await deleteProduct(product.id)
                                       setPendingDelete(null)
                                     } catch (err) {
                                       setActionError(err.message)
                                       setPendingDelete(null)
+                                    } finally {
+                                      setDeletingId('')
                                     }
                                   }}
                                 >
-                                  Delete
+                                  {deletingId === product.id ? 'Deleting…' : 'Delete'}
                                 </button>
                               </>
                             ) : (

@@ -48,6 +48,7 @@ function ProductForm({ product }) {
   const [error, setError] = useState('')
   const [imageError, setImageError] = useState('')
   const [saving, setSaving] = useState(false)
+  const [reading, setReading] = useState(false)
 
   function onName(value) {
     setName(value)
@@ -66,7 +67,15 @@ function ProductForm({ product }) {
       return
     }
     const reader = new FileReader()
-    reader.onload = () => setImage(String(reader.result || ''))
+    setReading(true)
+    reader.onload = () => {
+      setImage(String(reader.result || ''))
+      setReading(false)
+    }
+    reader.onerror = () => {
+      setImageError('That image could not be read.')
+      setReading(false)
+    }
     reader.readAsDataURL(file)
   }
 
@@ -124,7 +133,9 @@ function ProductForm({ product }) {
           </Link>
           <h1 className="mt-2 font-display text-3xl font-semibold text-navy">{product ? 'Edit product' : 'Add a product'}</h1>
         </div>
-        <button type="submit" className="btn btn-primary" disabled={saving}>{saving ? 'Saving…' : product ? 'Save changes' : 'Publish product'}</button>
+        <button type="submit" className="btn btn-primary" disabled={saving || categories.length === 0} aria-busy={saving}>
+          {saving ? 'Saving…' : product ? 'Save changes' : 'Publish product'}
+        </button>
       </div>
 
       {categories.length === 0 && (
@@ -203,8 +214,8 @@ function ProductForm({ product }) {
               </div>
             )}
             <input ref={fileRef} type="file" accept="image/*" tabIndex={-1} className="sr-only" onChange={(event) => onFile(event.target.files?.[0])} />
-            <button type="button" className="btn btn-outline mt-3 w-full" onClick={() => fileRef.current?.click()}>
-              <ImagePlus size={16} aria-hidden="true" /> Upload image
+            <button type="button" className="btn btn-outline mt-3 w-full" disabled={reading || saving} aria-busy={reading} onClick={() => fileRef.current?.click()}>
+              <ImagePlus size={16} aria-hidden="true" /> {reading ? 'Reading image…' : 'Upload image'}
             </button>
             <label className="mt-4 block text-sm font-semibold text-navy">
               Or image path
@@ -230,7 +241,9 @@ function ProductForm({ product }) {
 
       {error && <p role="alert" className="mt-5 border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900">{error}</p>}
       <div className="mt-6 flex gap-3">
-        <button type="submit" className="btn btn-primary" disabled={categories.length === 0}>{product ? 'Save changes' : 'Publish product'}</button>
+        <button type="submit" className="btn btn-primary" disabled={saving || categories.length === 0} aria-busy={saving}>
+          {saving ? 'Saving…' : product ? 'Save changes' : 'Publish product'}
+        </button>
         <Link to="/auth/admin/products" className="btn btn-outline">Cancel</Link>
       </div>
     </form>

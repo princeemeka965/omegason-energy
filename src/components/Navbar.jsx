@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
 import Logo from './Logo'
@@ -24,7 +25,9 @@ export default function Navbar() {
   }, [open])
 
   return (
-    <header className="sticky top-0 z-50 border-b border-line bg-white">
+    <>
+    {open && <div className="h-16 md:h-26 lg:hidden" aria-hidden="true" />}
+    <header className={`${open ? 'max-lg:fixed max-lg:inset-x-0 lg:sticky' : 'sticky'} top-0 z-50 border-b border-line bg-white`}>
       <div className="hidden border-b border-white/10 bg-navy text-sm text-white/85 md:block">
         <div className="mx-auto flex h-10 max-w-7xl items-center justify-between px-6 md:px-10">
           <p>Head office · 180 Agbani Road, Enugu</p>
@@ -70,8 +73,8 @@ export default function Navbar() {
         </button>
       </nav>
 
-      {open && (
-        <div className="absolute inset-x-0 top-full border-b border-line bg-white shadow-lg lg:hidden">
+      {open && createPortal(
+        <div className="fixed inset-x-0 top-16 z-40 max-h-[calc(100dvh-4rem)] overflow-y-auto border-b border-line bg-white shadow-lg md:top-26 md:max-h-[calc(100dvh-6.5rem)] lg:hidden">
           <ul className="flex flex-col px-4 py-3">
             {links.map((l) => (
               <li key={l.to}>
@@ -90,8 +93,10 @@ export default function Navbar() {
               <Link to="/contact" className="btn btn-primary w-full">Contact us</Link>
             </li>
           </ul>
-        </div>
+        </div>,
+        document.body,
       )}
     </header>
+    </>
   )
 }

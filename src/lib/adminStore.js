@@ -46,8 +46,9 @@ export function peekOtp() {
 }
 
 function rememberOtp(pending) {
-  sessionStorage.setItem(OTP_KEY, JSON.stringify(pending))
-  return pending
+  const stored = { email: pending.email, expiresAt: pending.expiresAt }
+  sessionStorage.setItem(OTP_KEY, JSON.stringify(stored))
+  return stored
 }
 
 export function forgetOtp() {
@@ -124,8 +125,16 @@ export function deleteProduct(id) {
   return request(`/api/products/${encodeURIComponent(id)}`, { method: 'DELETE' })
 }
 
-export function saveQuotesEmail(email) {
-  return request('/api/settings/quotes-email', { method: 'PUT', body: { email } }).then((settings) => settings.quotesEmail)
+export function requestAccountChange(input) {
+  return request('/api/settings/account', { method: 'POST', body: input })
+}
+
+export function confirmAccountChange(code) {
+  return request('/api/settings/account/verify', { method: 'POST', body: { code } })
+}
+
+export function cancelAccountChange() {
+  return request('/api/settings/account/otp', { method: 'DELETE' })
 }
 
 export function addQuote(input) {

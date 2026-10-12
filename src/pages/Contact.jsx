@@ -115,7 +115,7 @@ export default function Contact() {
                     The message did not send. Check your connection and try again, or call {site.mobile}. This form works on the deployed Netlify site, not the local preview.
                   </p>
                 )}
-                <button type="submit" disabled={status === 'sending'} className="btn btn-primary mt-6 disabled:opacity-60">
+                <button type="submit" disabled={status === 'sending'} aria-busy={status === 'sending'} className="btn btn-primary mt-6">
                   {status === 'sending' ? 'Sending…' : 'Send email'}
                 </button>
               </form>

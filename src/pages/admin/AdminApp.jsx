@@ -6,6 +6,7 @@ import LoginPage from './LoginPage'
 import ProductFormPage from './ProductFormPage'
 import ProductsPage from './ProductsPage'
 import QuotesPage from './QuotesPage'
+import SettingsPage from './SettingsPage'
 
 function AdminRouter() {
   const { session, ready, loadError } = useAdmin()
@@ -38,6 +39,7 @@ function AdminRouter() {
         <Route path="/auth/admin/products" element={<ProductsPage />} />
         <Route path="/auth/admin/categories" element={<CategoriesPage />} />
         <Route path="/auth/admin/quotes" element={<QuotesPage />} />
+        <Route path="/auth/admin/settings" element={<SettingsPage />} />
         <Route path="*" element={<Navigate to="/auth/admin/products" replace />} />
       </Routes>
     </AdminShell>

@@ -13,10 +13,12 @@ import {
   markQuoteRead,
   peekOtp,
   renameCategory,
+  requestAccountChange,
   requestOtp,
   saveProduct,
-  saveQuotesEmail,
   verifyOtp,
+  cancelAccountChange,
+  confirmAccountChange,
 } from './adminStore'
 
 const AdminContext = createContext(null)
@@ -30,6 +32,7 @@ const EMPTY = {
   products: [],
   quotes: [],
   settings: { quotesEmail: '' },
+  account: { name: '', email: '' },
 }
 
 export function AdminProvider({ children }) {
@@ -45,6 +48,7 @@ export function AdminProvider({ children }) {
       products: data.products,
       quotes: data.quotes,
       settings: data.settings,
+      account: data.account || { name: '', email: session?.email || '' },
     }))
   }, [])
 
@@ -56,6 +60,7 @@ export function AdminProvider({ children }) {
       products: data.products,
       quotes: data.quotes,
       settings: data.settings,
+      account: data.account || current.account,
     }))
     return data
   }, [])
@@ -142,11 +147,18 @@ export function AdminProvider({ children }) {
         await deleteQuote(id)
         await refresh()
       },
-      saveQuotesEmail: async (email) => {
-        const saved = await saveQuotesEmail(email)
+      requestAccountChange: (input) => requestAccountChange(input),
+      confirmAccountChange: async (code) => {
+        const account = await confirmAccountChange(code)
+        setState((current) => ({
+          ...current,
+          account,
+          session: current.session ? { ...current.session, email: account.email } : current.session,
+        }))
         await refresh()
-        return saved
+        return account
       },
+      cancelAccountChange: () => cancelAccountChange(),
     }
   }, [applyDashboard, refresh])
 

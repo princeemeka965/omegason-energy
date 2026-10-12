@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import { Inbox, LogOut, Menu, Package, Tags, X } from 'lucide-react'
+import { Inbox, LogOut, Menu, Package, Settings, Tags, X } from 'lucide-react'
 import Logo from '../Logo'
 import Seo from '../Seo'
 import { useAdmin } from '../../lib/adminContext'
@@ -9,11 +9,13 @@ const links = [
   { to: '/auth/admin/products', label: 'Products', icon: Package },
   { to: '/auth/admin/categories', label: 'Categories', icon: Tags },
   { to: '/auth/admin/quotes', label: 'Quotes', icon: Inbox },
+  { to: '/auth/admin/settings', label: 'Settings', icon: Settings },
 ]
 
 export default function AdminShell({ children }) {
   const { session, logoutAdmin, unreadQuotes, settings } = useAdmin()
   const [open, setOpen] = useState(false)
+  const [signingOut, setSigningOut] = useState(false)
   const [desktop, setDesktop] = useState(() => window.matchMedia('(min-width: 1024px)').matches)
 
   useEffect(() => {
@@ -77,10 +79,22 @@ export default function AdminShell({ children }) {
         <div className="border-t border-white/10 p-4">
           <p className="truncate text-sm text-white/80">{session?.email}</p>
           <p className="mt-1 text-xs text-white/55">
-            {settings.quotesEmail ? `Quotes go to ${settings.quotesEmail}` : 'Set a quotes inbox under Quotes'}
+            {settings.quotesEmail ? `Quotes go to ${settings.quotesEmail}` : 'Set a quotes inbox under Settings'}
           </p>
-          <button type="button" onClick={logoutAdmin} className="btn btn-outline-light mt-4 w-full">
-            <LogOut size={16} aria-hidden="true" /> Sign out
+          <button
+            type="button"
+            disabled={signingOut}
+            onClick={async () => {
+              setSigningOut(true)
+              try {
+                await logoutAdmin()
+              } finally {
+                setSigningOut(false)
+              }
+            }}
+            className="btn btn-outline-light mt-4 w-full"
+          >
+            <LogOut size={16} aria-hidden="true" /> {signingOut ? 'Signing out…' : 'Sign out'}
           </button>
         </div>
       </aside>

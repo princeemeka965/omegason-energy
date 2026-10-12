@@ -10,15 +10,19 @@ export default function CategoriesPage() {
   const [draft, setDraft] = useState('')
   const [rowError, setRowError] = useState(null)
   const [pendingDelete, setPendingDelete] = useState(null)
+  const [working, setWorking] = useState('')
 
   async function onCreate(event) {
     event.preventDefault()
     setError('')
+    setWorking('create')
     try {
       await createCategory(name)
       setName('')
     } catch (err) {
       setError(err.message)
+    } finally {
+      setWorking('')
     }
   }
 
@@ -32,11 +36,14 @@ export default function CategoriesPage() {
   async function saveEdit(event) {
     event.preventDefault()
     setRowError(null)
+    setWorking(editing)
     try {
       await renameCategory(editing, draft)
       setEditing(null)
     } catch (err) {
       setRowError({ id: editing, message: err.message })
+    } finally {
+      setWorking('')
     }
   }
 
@@ -53,7 +60,9 @@ export default function CategoriesPage() {
           New category
           <input value={name} onChange={(event) => setName(event.target.value)} placeholder="Charge controllers" className="field" />
         </label>
-        <button type="submit" className="btn btn-primary">Add category</button>
+        <button type="submit" className="btn btn-primary" disabled={working === 'create'} aria-busy={working === 'create'}>
+          {working === 'create' ? 'Adding…' : 'Add category'}
+        </button>
       </form>
       {error && <p role="alert" className="mt-3 border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-900">{error}</p>}
 
@@ -73,8 +82,10 @@ export default function CategoriesPage() {
                     <input value={draft} onChange={(event) => setDraft(event.target.value)} className="field mt-0" autoFocus />
                   </label>
                   <div className="flex gap-2">
-                    <button type="submit" className="btn btn-primary !px-3 !py-2">Save</button>
-                    <button type="button" className="btn btn-outline !px-3 !py-2" onClick={() => setEditing(null)}>Cancel</button>
+                    <button type="submit" className="btn btn-primary !px-3 !py-2" disabled={working === category.id} aria-busy={working === category.id}>
+                      {working === category.id ? 'Saving…' : 'Save'}
+                    </button>
+                    <button type="button" className="btn btn-outline !px-3 !py-2" disabled={working === category.id} onClick={() => setEditing(null)}>Cancel</button>
                   </div>
                 </form>
               ) : (
@@ -92,19 +103,24 @@ export default function CategoriesPage() {
                         <button type="button" className="btn btn-outline !px-3 !py-2" onClick={() => setPendingDelete(null)}>Cancel</button>
                         <button
                           type="button"
-                          className="bg-red-700 px-3 py-2 text-sm font-semibold text-white"
+                          className="bg-red-700 px-3 py-2 text-sm font-semibold text-white disabled:cursor-wait disabled:opacity-60"
+                          disabled={working === `delete:${category.id}`}
+                          aria-busy={working === `delete:${category.id}`}
                           onClick={async () => {
                             setRowError(null)
+                            setWorking(`delete:${category.id}`)
                             try {
                               await deleteCategory(category.id)
                               setPendingDelete(null)
                             } catch (err) {
                               setRowError({ id: category.id, message: err.message })
                               setPendingDelete(null)
+                            } finally {
+                              setWorking('')
                             }
                           }}
                         >
-                          Delete
+                          {working === `delete:${category.id}` ? 'Deleting…' : 'Delete'}
                         </button>
                       </>
                     ) : (

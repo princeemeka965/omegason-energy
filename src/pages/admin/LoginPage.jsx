@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ShieldCheck } from 'lucide-react'
 import Logo from '../../components/Logo'
 import Seo from '../../components/Seo'
 import { useAdmin } from '../../lib/adminContext'
@@ -12,8 +11,8 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [code, setCode] = useState('')
-  const [devCode, setDevCode] = useState(pendingOtp?.devCode || '')
   const [error, setError] = useState('')
+  const [pending, setPending] = useState('')
   const [cooldown, setCooldown] = useState(0)
   const inputs = useRef([])
   const attempted = useRef('')
@@ -28,13 +27,18 @@ export default function LoginPage() {
     if (step !== 'otp' || code.length !== 6 || code === attempted.current) return undefined
     attempted.current = code
     let cancelled = false
-    verifyOtp(code).catch((err) => {
-      if (cancelled) return
-      setError(err.message)
-      setCode('')
-      attempted.current = ''
-      inputs.current[0]?.focus()
-    })
+    setPending('check')
+    verifyOtp(code)
+      .catch((err) => {
+        if (cancelled) return
+        setError(err.message)
+        setCode('')
+        attempted.current = ''
+        inputs.current[0]?.focus()
+      })
+      .finally(() => {
+        if (!cancelled) setPending('')
+      })
     return () => {
       cancelled = true
     }
@@ -43,16 +47,18 @@ export default function LoginPage() {
   async function onCredentials(event) {
     event.preventDefault()
     setError('')
+    setPending('send')
     try {
-      const pending = await requestOtp({ email, password })
-      setEmail(pending.email)
-      setDevCode(pending.devCode || '')
+      const next = await requestOtp({ email, password })
+      setEmail(next.email)
       setCode('')
       attempted.current = ''
       setStep('otp')
       setCooldown(15)
     } catch (err) {
       setError(err.message)
+    } finally {
+      setPending('')
     }
   }
 
@@ -63,14 +69,16 @@ export default function LoginPage() {
       setError('Enter your password again to issue a new code.')
       return
     }
+    setPending('send')
     try {
-      const pending = await requestOtp({ email, password })
-      setDevCode(pending.devCode || '')
+      await requestOtp({ email, password })
       setCode('')
       attempted.current = ''
       setCooldown(15)
     } catch (err) {
       setError(err.message)
+    } finally {
+      setPending('')
     }
   }
 
@@ -121,7 +129,7 @@ export default function LoginPage() {
           {step === 'credentials' ? (
             <form onSubmit={onCredentials} className="mt-8 space-y-5">
               <p className="text-sm leading-relaxed text-muted">
-                After your email and password, a one-time code is required. Mail is not connected yet, so the development code appears on the next step.
+                Enter the email and password for this account. A code is emailed only after both are correct.
               </p>
               <label className="block text-sm font-semibold text-navy">
                 Email
@@ -156,7 +164,9 @@ export default function LoginPage() {
                 </span>
               </label>
               {error && <p role="alert" className="border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-900">{error}</p>}
-              <button type="submit" className="btn btn-primary w-full">Continue</button>
+              <button type="submit" className="btn btn-primary w-full" disabled={pending !== ''} aria-busy={pending === 'send'}>
+                {pending === 'send' ? 'Sending code…' : 'Continue'}
+              </button>
             </form>
           ) : (
             <form
@@ -164,31 +174,20 @@ export default function LoginPage() {
               onSubmit={(event) => {
                 event.preventDefault()
                 setError('')
-                verifyOtp(code).catch((err) => {
-                  setError(err.message)
-                  setCode('')
-                  attempted.current = ''
-                })
+                if (pending || code.length !== 6) return
+                setPending('check')
+                verifyOtp(code)
+                  .catch((err) => {
+                    setError(err.message)
+                    setCode('')
+                    attempted.current = ''
+                  })
+                  .finally(() => setPending(''))
               }}
             >
               <p className="text-sm leading-relaxed text-muted">
-                Enter the 6-digit code for <span className="font-semibold text-navy">{email}</span>.
+                Enter the 6-digit code sent to <span className="font-semibold text-navy">{email}</span>.
               </p>
-              {devCode && (
-                <div className="mt-5 border border-brass/40 bg-white px-4 py-3">
-                  <p className="flex items-center gap-2 text-sm font-semibold text-navy">
-                    <ShieldCheck size={16} className="text-brass" aria-hidden="true" /> Development code
-                  </p>
-                  <p className="mt-1 font-mono text-2xl tracking-[0.3em] text-navy">{devCode}</p>
-                  <button
-                    type="button"
-                    className="mt-2 text-sm font-semibold text-navy underline decoration-brass decoration-2 underline-offset-4"
-                    onClick={() => setCode(devCode)}
-                  >
-                    Fill this code
-                  </button>
-                </div>
-              )}
               <div className="mt-6 flex justify-between gap-2" onPaste={onPaste}>
                 {Array.from({ length: 6 }, (_, index) => (
                   <input
@@ -198,6 +197,7 @@ export default function LoginPage() {
                     autoComplete={index === 0 ? 'one-time-code' : 'off'}
                     aria-label={`Digit ${index + 1}`}
                     value={code[index] || ''}
+                    disabled={pending !== ''}
                     onChange={(event) => setDigit(index, event.target.value)}
                     onKeyDown={(event) => onDigitKey(index, event)}
                     className="field mt-0 h-14 w-12 px-0 text-center font-mono text-xl"
@@ -205,19 +205,22 @@ export default function LoginPage() {
                 ))}
               </div>
               {error && <p role="alert" className="mt-4 border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-900">{error}</p>}
-              <button type="submit" className="btn btn-primary mt-6 w-full" disabled={code.length !== 6}>Verify and enter</button>
+              <button type="submit" className="btn btn-primary mt-6 w-full" disabled={pending !== '' || code.length !== 6} aria-busy={pending === 'check'}>
+                {pending === 'check' ? 'Checking…' : 'Verify and enter'}
+              </button>
               <div className="mt-4 flex items-center justify-between text-sm">
                 <button
                   type="button"
                   className="font-semibold text-navy disabled:opacity-40"
-                  disabled={cooldown > 0}
+                  disabled={pending !== '' || cooldown > 0}
                   onClick={resend}
                 >
-                  {cooldown > 0 ? `New code in ${cooldown}s` : 'Issue a new code'}
+                  {pending === 'send' ? 'Sending…' : cooldown > 0 ? `New code in ${cooldown}s` : 'Issue a new code'}
                 </button>
                 <button
                   type="button"
-                  className="font-semibold text-muted"
+                  className="font-semibold text-muted disabled:opacity-40"
+                  disabled={pending !== ''}
                   onClick={() => {
                     clearOtp()
                     setStep('credentials')
