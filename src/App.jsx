@@ -13,9 +13,11 @@ const ProductDetail = lazy(() => import('./pages/ProductDetail'))
 const Projects = lazy(() => import('./pages/Projects'))
 const Contact = lazy(() => import('./pages/Contact'))
 const NotFound = lazy(() => import('./pages/NotFound'))
+const AdminApp = lazy(() => import('./pages/admin/AdminApp'))
 
 export default function App() {
   const location = useLocation()
+  const isAdmin = location.pathname === '/auth/admin' || location.pathname.startsWith('/auth/admin/')
 
   useEffect(() => {
     const id = 'seo-organization'
@@ -28,6 +30,14 @@ export default function App() {
     }
     script.textContent = JSON.stringify(organizationJsonLd())
   }, [])
+
+  if (isAdmin) {
+    return (
+      <Suspense fallback={<div className="min-h-screen bg-paper" />}>
+        <AdminApp />
+      </Suspense>
+    )
+  }
 
   return (
     <>

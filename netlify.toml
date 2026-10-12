@@ -7,11 +7,12 @@
 
 # Any path that is not a real file serves the React app, so reloads and
 # shared deep links (/products/solar-street-light) work.
+# The API address is VITE_API_URL, set in the Netlify environment before the build.
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-
+  
 [[headers]]
   for = "/assets/*"
   [headers.values]

@@ -3,9 +3,11 @@ import { Check, MessageCircle } from 'lucide-react'
 import ProductCard, { ProductImage } from '../components/ProductCard'
 import Seo from '../components/Seo'
 import NotFound from './NotFound'
-import { categories } from '../data/products'
 import { site } from '../data/site'
 import { formatPrice, useProduct, useProducts } from '../lib/api'
+import { categoryLabel } from '../lib/catalog'
+import { sanitizeHtml } from '../lib/sanitize'
+import { isEmptyHtml, plainText } from '../lib/text'
 
 export default function ProductDetail() {
   const { slug } = useParams()
@@ -15,8 +17,9 @@ export default function ProductDetail() {
   if (loading && !product) return <div className="min-h-[50vh] bg-paper px-6 py-20 text-muted md:px-10">Loading product…</div>
   if (!product) return <NotFound message="We could not find that product." backTo="/products" backLabel="Back to products" />
 
-  const category = categories.find((c) => c.id === product.category)
+  const categoryName = categoryLabel(product.category)
   const price = formatPrice(product.price)
+  const description = plainText(product.descriptionHtml || product.description)
   const related = products.filter((p) => p.category === product.category && p.slug !== product.slug).slice(0, 3)
   const wa = `https://wa.me/${site.whatsapp}?text=${encodeURIComponent(`Hello Omegason, I would like a quote for: ${product.name}`)}`
 
@@ -24,8 +27,8 @@ export default function ProductDetail() {
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: product.name,
-    description: product.description,
-    category: category?.label,
+    description,
+    category: categoryName,
     brand: { '@type': 'Brand', name: 'Omegason' },
     url: `https://www.omegasonenergy.com/products/${product.slug}`,
     ...(product.price
@@ -48,7 +51,7 @@ export default function ProductDetail() {
         description={product.summary}
         path={`/products/${product.slug}`}
         type="product"
-        image={product.image || '/media/hybrid.jpg'}
+        image={product.image && !String(product.image).startsWith('data:') ? product.image : '/media/hybrid.jpg'}
         jsonLd={productJsonLd}
       />
       <section className="bg-white px-6 py-10 md:px-10 md:py-14">
@@ -64,10 +67,14 @@ export default function ProductDetail() {
             </div>
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.12em] text-brass">
-                {category?.label}{product.sample ? ' · Sample listing' : ''}
+                {categoryName}{product.sample ? ' · Sample listing' : ''}
               </p>
               <h1 className="mt-2 font-display text-4xl font-semibold leading-tight text-navy">{product.name}</h1>
-              <p className="mt-4 text-lg leading-relaxed text-muted">{product.description}</p>
+              {!isEmptyHtml(product.descriptionHtml) ? (
+                <div className="rich-copy mt-4 text-lg text-muted" dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.descriptionHtml) }} />
+              ) : (
+                <p className="mt-4 text-lg leading-relaxed text-muted">{product.description}</p>
+              )}
               <p className="mt-6 font-display text-3xl font-semibold text-navy">{price || 'Request a quote'}</p>
               <div className="mt-6 flex flex-wrap gap-3">
                 <Link to={`/contact?product=${product.slug}`} className="btn btn-primary">Request a quote</Link>
@@ -87,7 +94,12 @@ export default function ProductDetail() {
             </div>
           </div>
 
-          {product.specs?.length > 0 && (
+          {!isEmptyHtml(product.specificationsHtml) ? (
+            <div className="mt-14 border border-line">
+              <h2 className="border-b border-line bg-paper px-5 py-4 font-display text-xl font-semibold text-navy">Specifications</h2>
+              <div className="rich-copy px-5 py-4" dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.specificationsHtml) }} />
+            </div>
+          ) : product.specs?.length > 0 && (
             <div className="mt-14 border border-line">
               <h2 className="border-b border-line bg-paper px-5 py-4 font-display text-xl font-semibold text-navy">Specifications</h2>
               <dl>
@@ -106,7 +118,7 @@ export default function ProductDetail() {
       {related.length > 0 && (
         <section className="border-t border-line bg-paper px-6 py-14 md:px-10">
           <div className="mx-auto max-w-7xl">
-            <h2 className="font-display text-2xl font-semibold text-navy">More in {category?.label}</h2>
+            <h2 className="font-display text-2xl font-semibold text-navy">More in {categoryName}</h2>
             <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {related.map((p) => <ProductCard key={p.slug} product={p} />)}
             </div>

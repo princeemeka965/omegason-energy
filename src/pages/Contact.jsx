@@ -1,30 +1,57 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { CheckCircle2, MessageCircle, Phone } from 'lucide-react'
 import PageHeader from '../components/PageHeader'
 import Seo from '../components/Seo'
 import { offices, site, team } from '../data/site'
-import { products } from '../data/products'
+import { addQuote, isQuoteRequest } from '../lib/adminStore'
+import { useProducts } from '../lib/api'
 
 export default function Contact() {
   const [params] = useSearchParams()
+  const { products, loading } = useProducts()
   const wanted = products.find((p) => p.slug === params.get('product'))
+  const [subject, setSubject] = useState('')
   const [status, setStatus] = useState('idle')
+
+  useEffect(() => {
+    if (wanted) setSubject(`Quote request: ${wanted.name}`)
+  }, [wanted])
 
   async function onSubmit(e) {
     e.preventDefault()
     setStatus('sending')
     const data = new FormData(e.currentTarget)
+    const fields = Object.fromEntries(data)
+    if (fields['bot-field']) return
+    const productSlug = wanted?.slug || fields.product || ''
+    const quote = isQuoteRequest({ subject: fields.subject, productSlug })
+    if (quote) {
+      try {
+        await addQuote({
+          name: fields.name,
+          email: fields.email,
+          subject: fields.subject,
+          message: fields.message,
+          productSlug,
+          productName: wanted?.name || '',
+        })
+      } catch {
+        setStatus('error')
+        return
+      }
+    }
     try {
       const res = await fetch('/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({ 'form-name': 'contact', ...Object.fromEntries(data) }).toString(),
+        body: new URLSearchParams({ 'form-name': 'contact', ...fields }).toString(),
       })
       if (!res.ok) throw new Error('Request failed')
       setStatus('sent')
     } catch {
-      setStatus('error')
+      if (quote) setStatus('sent')
+      else setStatus('error')
     }
   }
 
@@ -67,6 +94,7 @@ export default function Contact() {
                 <h2 className="font-display text-2xl font-semibold text-navy">Send an email</h2>
                 <p className="mt-1 text-sm text-muted">Required fields are marked.</p>
                 <input type="hidden" name="form-name" value="contact" />
+                <input type="hidden" name="product" value={wanted?.slug || ''} />
                 <p className="hidden"><label>Do not fill this in: <input name="bot-field" /></label></p>
                 <div className="mt-6 grid gap-5 sm:grid-cols-2">
                   <label className="block text-sm font-semibold text-navy">Name *
@@ -77,7 +105,7 @@ export default function Contact() {
                   </label>
                 </div>
                 <label className="mt-5 block text-sm font-semibold text-navy">Subject *
-                  <input required name="subject" defaultValue={wanted ? `Quote request: ${wanted.name}` : ''} className="field" />
+                  <input required name="subject" value={subject} onChange={(event) => setSubject(event.target.value)} className="field" disabled={loading && Boolean(params.get('product')) && !wanted} />
                 </label>
                 <label className="mt-5 block text-sm font-semibold text-navy">Message *
                   <textarea required name="message" rows={6} className="field" />

@@ -10,6 +10,14 @@ npm run dev      # http://localhost:5173
 npm run build    # outputs dist/
 ```
 
+The catalogue admin at `/auth/admin` calls the API in `C:\omegason-api`. Start that as well (see that folder's README). The site reads the address from `VITE_API_URL` in `.env`. Locally:
+
+```
+VITE_API_URL=http://localhost:5050
+```
+
+On Netlify, set `VITE_API_URL` to the public API URL before the build. Vite bakes that value into the site, so change it and rebuild when the API address changes.
+
 ## Deploy on Netlify
 
 1. Push this folder to GitHub and import the repo in Netlify (build settings are read from `netlify.toml`),

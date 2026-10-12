@@ -5,13 +5,13 @@ import { Search } from 'lucide-react'
 import PageHeader from '../components/PageHeader'
 import Seo from '../components/Seo'
 import ProductCard from '../components/ProductCard'
-import { categories } from '../data/products'
-import { useProducts } from '../lib/api'
+import { useCategories, useProducts } from '../lib/api'
 
 const PAGE_SIZE = 12
 
 export default function Products() {
   const { products, loading } = useProducts()
+  const categories = useCategories()
   const [category, setCategory] = useState('all')
   const [query, setQuery] = useState('')
   const [page, setPage] = useState(1)
@@ -27,7 +27,7 @@ export default function Products() {
   const pageCount = Math.max(1, Math.ceil(shown.length / PAGE_SIZE))
   const safePage = Math.min(page, pageCount)
   const pageItems = shown.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
-  const chips = [{ id: 'all', label: 'All products' }, ...categories]
+  const chips = [{ id: 'all', label: 'All products' }, ...categories.filter((c) => products.some((p) => p.category === c.id))]
 
   useEffect(() => {
     setPage(1)
