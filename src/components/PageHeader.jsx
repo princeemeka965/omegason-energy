@@ -6,7 +6,7 @@ export default function PageHeader({ eyebrow = 'Omegason Integrated Energy Servi
         <h1 className="mt-3 max-w-4xl font-display text-4xl font-semibold leading-tight tracking-tight md:text-5xl">
           {title}
         </h1>
-        {children && <p className="mt-4 max-w-2xl text-lg leading-relaxed text-white/80">{children}</p>}
+        {children && <div className="mt-4 max-w-2xl text-lg leading-relaxed text-white/80">{children}</div>}
       </div>
     </section>
   )

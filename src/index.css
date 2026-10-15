@@ -27,6 +27,27 @@ body {
 ::selection { background: #e7d3b4; color: var(--color-navy); }
 :focus-visible { outline: 2px solid var(--color-brass); outline-offset: 3px; }
 
+a[href],
+button:not(:disabled),
+summary,
+label,
+select:not(:disabled),
+input[type="checkbox"],
+input[type="radio"],
+input[type="file"],
+input[type="button"]:not(:disabled),
+input[type="submit"]:not(:disabled),
+input[type="reset"]:not(:disabled),
+[role="button"]:not([aria-disabled="true"]),
+[role="tab"]:not([aria-disabled="true"]) {
+  cursor: pointer;
+}
+button:disabled,
+select:disabled,
+input:disabled {
+  cursor: not-allowed;
+}
+
 .btn {
   display: inline-flex;
   align-items: center;
@@ -77,6 +98,11 @@ body {
   outline: none;
   box-shadow: 0 0 0 3px rgba(11, 37, 69, .12);
 }
+.field:disabled {
+  background: var(--color-paper);
+  color: var(--color-muted);
+  cursor: not-allowed;
+}
 .search-field {
   margin-top: 0;
   padding-top: 0.65rem;
@@ -88,6 +114,7 @@ body {
 .prose-copy p + p { margin-top: 1rem; }
 
 .rich-editor .ProseMirror { min-height: 11rem; }
+.rich-editor.is-compact .ProseMirror { min-height: 6.5rem; }
 .rich-editor .ProseMirror:focus { outline: none; }
 .rich-editor .ProseMirror p.is-editor-empty:first-child::before {
   color: var(--color-muted);
@@ -123,3 +150,6 @@ body {
   padding-left: 0.9rem;
 }
 .rich-copy :where(strong, b) { color: var(--color-ink); }
+.rich-on-navy { color: rgb(255 255 255 / 0.8); }
+.rich-on-navy :where(h2, h3, strong, b) { color: #fff; }
+.rich-on-navy :where(a) { color: #fff; text-decoration-color: var(--color-brass-soft); }

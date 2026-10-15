@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
 import Logo from './Logo'
+import SolarQuoteModal from './SolarQuoteModal'
 import { site } from '../data/site'
 
 const links = [
@@ -16,9 +17,13 @@ const links = [
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
+  const [quoteOpen, setQuoteOpen] = useState(false)
   const { pathname } = useLocation()
 
-  useEffect(() => setOpen(false), [pathname])
+  useEffect(() => {
+    setOpen(false)
+    setQuoteOpen(false)
+  }, [pathname])
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : ''
     return () => { document.body.style.overflow = '' }
@@ -60,7 +65,7 @@ export default function Navbar() {
         </ul>
 
         <div className="hidden lg:block">
-          <Link to="/contact" className="btn btn-primary">Contact us</Link>
+          <button type="button" className="btn btn-primary" onClick={() => setQuoteOpen(true)}>Request a quote</button>
         </div>
 
         <button
@@ -90,13 +95,14 @@ export default function Navbar() {
               </li>
             ))}
             <li className="px-3 py-3">
-              <Link to="/contact" className="btn btn-primary w-full">Contact us</Link>
+              <button type="button" className="btn btn-primary w-full" onClick={() => { setOpen(false); setQuoteOpen(true) }}>Request a quote</button>
             </li>
           </ul>
         </div>,
         document.body,
       )}
     </header>
+    {quoteOpen && <SolarQuoteModal onClose={() => setQuoteOpen(false)} />}
     </>
   )
 }

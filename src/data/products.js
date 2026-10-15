@@ -39,7 +39,7 @@ export const products = [
     summary: 'Black-cell module for rooftops where space is tight.',
     description:
       'A sample monocrystalline module with a dark cell surface and a silver frame. Use it to show how a single panel looks in the catalogue. Replace the rating and warranty with the module you actually stock.',
-    price: null,
+    price: 185000,
     image: '/products/px-9875441.jpg',
     featured: true,
     sample: true,
@@ -57,7 +57,7 @@ export const products = [
     summary: 'Blue-cell module for larger roofs and ground arrays.',
     description:
       'A sample polycrystalline module, shown as a blue cell field. It is the everyday panel for sites where roof area is not the limit. Swap in your real wattage and datasheet before publishing.',
-    price: null,
+    price: 98000,
     image: '/products/px-356049.jpg',
     featured: false,
     sample: true,
@@ -75,7 +75,7 @@ export const products = [
     summary: 'A single framed panel sized for tile and sheet roofs.',
     description:
       'A sample rooftop module photographed on clay tiles. It stands in for the panel you would specify for a house or small shop. Confirm flashings and roof structure on site.',
-    price: null,
+    price: 165000,
     image: '/products/px-9875440.jpg',
     featured: false,
     sample: true,
@@ -93,7 +93,7 @@ export const products = [
     summary: 'Modules laid out as a residential roof array.',
     description:
       'A sample of how several modules sit together on a pitched roof. The listing is for the panel itself; installation is quoted separately.',
-    price: null,
+    price: 172000,
     image: '/products/panel-array.jpg',
     featured: false,
     sample: true,
@@ -111,7 +111,7 @@ export const products = [
     summary: 'Tilted modules for a flat concrete roof.',
     description:
       'A sample four-module array on a flat roof, tilted toward the sun on simple stands. Use it to show a small commercial or home roof where the surface itself is level.',
-    price: null,
+    price: 720000,
     image: '/products/panel-syria.jpg',
     featured: false,
     sample: true,
@@ -129,7 +129,7 @@ export const products = [
     summary: 'Rows of modules on posts, for open land.',
     description:
       'A sample ground-mounted array. It is the layout used when the roof is too small or too shaded and there is open ground beside the building.',
-    price: null,
+    price: 2400000,
     image: '/products/panel-farm.jpg',
     featured: false,
     sample: true,
@@ -147,7 +147,7 @@ export const products = [
     summary: 'Runs from solar, battery and grid in one unit.',
     description:
       'A sample hybrid inverter shown with a matching panel string. It is the kind of unit that switches between solar, battery and mains. Replace it with the model, kVA and warranty you sell.',
-    price: null,
+    price: 890000,
     image: '/products/inverter-edge.jpg',
     featured: true,
     sample: true,
@@ -165,7 +165,7 @@ export const products = [
     summary: 'A string inverter fixed to the wall beside the cable run.',
     description:
       'A sample string inverter as it looks once installed, with DC and AC cables leaving the bottom of the case. It converts a rooftop string into mains power.',
-    price: null,
+    price: 410000,
     image: '/products/inverter-string.jpg',
     featured: false,
     sample: true,
@@ -183,7 +183,7 @@ export const products = [
     summary: 'A floor-standing inverter for a large array.',
     description:
       'A sample central inverter cabinet for a commercial or estate array. It sits beside the array rather than on a house wall, and it is sized for many strings at once.',
-    price: null,
+    price: 4500000,
     image: '/products/inverter-central.jpg',
     featured: false,
     sample: true,
@@ -201,7 +201,7 @@ export const products = [
     summary: 'The power stage inside a hybrid inverter.',
     description:
       'A sample hybrid inverter with the cover off, so the fans, magnetics and terminal block are visible. It is here to show the hardware behind the cabinet, not as a unit sold open.',
-    price: null,
+    price: 950000,
     image: '/products/inverter-hybrid.jpg',
     featured: false,
     sample: true,
@@ -219,7 +219,7 @@ export const products = [
     summary: 'Wall-mounted lithium storage for a home or shop.',
     description:
       'A sample wall battery, shown as stackable white cabinets. Daytime solar charges it; the house draws on it after sunset or during an outage. Capacity below is illustrative.',
-    price: null,
+    price: 1450000,
     image: '/products/battery-wall.jpg',
     featured: true,
     sample: true,
@@ -237,7 +237,7 @@ export const products = [
     summary: 'A boxed lithium module with a charge port.',
     description:
       'A sample lithium module in a steel case, with a charge connector on the face. It stands in for the block you would rack inside a larger bank.',
-    price: null,
+    price: 320000,
     image: '/products/battery-pack.jpg',
     featured: false,
     sample: true,
@@ -255,7 +255,7 @@ export const products = [
     summary: 'Batteries and switchgear in one floor cabinet.',
     description:
       'A sample storage cabinet with battery blocks stacked under the inverter and breakers. It is the layout used when a shop or clinic needs more than a single wall unit.',
-    price: null,
+    price: 3200000,
     image: '/products/battery-rack.jpg',
     featured: false,
     sample: true,
@@ -273,7 +273,7 @@ export const products = [
     summary: 'A sealed gel battery for lights and small systems.',
     description:
       'A sample 12-volt gel battery. It is the sealed block used in solar street lights, gate motors and other small loads, not a whole-home bank.',
-    price: null,
+    price: 48000,
     image: '/products/battery-gel.jpg',
     featured: false,
     sample: true,
@@ -291,7 +291,7 @@ export const products = [
     summary: 'A carry-out battery with USB and DC outlets.',
     description:
       'A sample portable power station. It charges from a panel or the wall, then runs phones, lights and small appliances from the ports on the back.',
-    price: null,
+    price: 195000,
     image: '/products/battery-portable.jpg',
     featured: false,
     sample: true,
@@ -309,7 +309,7 @@ export const products = [
     summary: 'Pole light with its own panel and battery box.',
     description:
       'A sample solar street light: panel on top of the pole, battery box on the shaft, and a lamp head over the road. It charges by day and switches on at dusk without a grid connection.',
-    price: null,
+    price: 185000,
     image: '/products/light-mammoth.jpg',
     featured: true,
     sample: true,
@@ -327,7 +327,7 @@ export const products = [
     summary: 'A pole light with a camera, for yards and car parks.',
     description:
       'A sample solar security light for a car park or compound entrance. The panel and lamp sit on the pole, with a camera on the same shaft.',
-    price: null,
+    price: 240000,
     image: '/products/light-parking.jpg',
     featured: false,
     sample: true,
@@ -345,7 +345,7 @@ export const products = [
     summary: 'A small path light with the panel in the cap.',
     description:
       'A sample garden light. The solar cell is in the cap, so each stake charges itself and lights a path or flower bed after dark.',
-    price: null,
+    price: 15000,
     image: '/products/light-garden.jpg',
     featured: false,
     sample: true,
@@ -363,7 +363,7 @@ export const products = [
     summary: 'A mobile tower with panels and flood lamps.',
     description:
       'A sample trailer-mounted light tower. Panels on the deck charge the unit, and the lamp head rises over a road works or a yard that has no supply yet.',
-    price: null,
+    price: 3800000,
     image: '/products/px-9799708.jpg',
     featured: false,
     sample: true,
@@ -381,7 +381,7 @@ export const products = [
     summary: 'Panels, inverter and battery sized for a household.',
     description:
       'A sample home kit, illustrated by rooftop arrays on houses. It bundles panels, a hybrid inverter and a battery so a household does not have to piece the system together.',
-    price: null,
+    price: 4500000,
     image: '/products/px-9875682.jpg',
     featured: false,
     sample: true,
@@ -399,7 +399,7 @@ export const products = [
     summary: 'A roof array for a workshop, warehouse or factory.',
     description:
       'A sample business kit, shown as modules across a large industrial roof. It is aimed at daytime loads such as freezers, pumps and workshop tools.',
-    price: null,
+    price: 12500000,
     image: '/products/panel-install.jpg',
     featured: false,
     sample: true,
@@ -417,7 +417,7 @@ export const products = [
     summary: 'A roof system installed for a building that cannot go dark.',
     description:
       'A sample kit for a clinic, school or office that needs power when the grid drops. The photograph shows a crew fixing modules on a roof, which is how this kit is delivered.',
-    price: null,
+    price: 6800000,
     image: '/products/px-8853536.jpg',
     featured: false,
     sample: true,
@@ -435,7 +435,7 @@ export const products = [
     summary: 'Solar pole lights for a yard, estate or works site.',
     description:
       'A sample lighting kit for a compound or yard. Several solar pole lights cover the open ground, each with its own panel, so there is no cable back to a meter.',
-    price: null,
+    price: 1600000,
     image: '/products/light-perimeter.jpg',
     featured: false,
     sample: true,
@@ -453,7 +453,7 @@ export const products = [
     summary: 'A ground array sized and checked for a larger site.',
     description:
       'A sample commercial kit: a ground array large enough for a business park or a farm, surveyed before it is built. The photograph shows that check on a finished array.',
-    price: null,
+    price: 18000000,
     image: '/products/px-4254167.jpg',
     featured: false,
     sample: true,

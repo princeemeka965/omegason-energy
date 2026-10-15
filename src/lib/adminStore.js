@@ -1,7 +1,36 @@
 // Pure helpers, plus the calls the admin screens make to the Express API.
-import { request } from './http'
+import { request, uploadFile } from './http'
 
-const OTP_KEY = 'omegason.admin.otp'
+const ADMIN_PRESENCE = 'omegason.admin.present'
+
+let adminRouteOpen = false
+
+export function isAdminPath(pathname) {
+  return pathname === '/auth/admin' || pathname.startsWith('/auth/admin/')
+}
+
+// The cookie survives a full page load, so a tab that was on an admin route
+// records that here. The next non-admin page clears the session.
+export function syncAdminPresence(pathname) {
+  if (isAdminPath(pathname)) {
+    adminRouteOpen = true
+    try {
+      sessionStorage.setItem(ADMIN_PRESENCE, '1')
+    } catch {
+      // Private mode can block storage. The in-memory flag still covers this tab.
+    }
+    return
+  }
+  let leftAdmin = adminRouteOpen
+  adminRouteOpen = false
+  try {
+    if (sessionStorage.getItem(ADMIN_PRESENCE) === '1') leftAdmin = true
+    sessionStorage.removeItem(ADMIN_PRESENCE)
+  } catch {
+    // Same as above.
+  }
+  if (leftAdmin) logoutAdmin()
+}
 
 export function slugify(value) {
   return String(value || '')
@@ -25,34 +54,13 @@ export function formatWhen(iso) {
   return new Intl.DateTimeFormat('en-NG', { dateStyle: 'medium', timeStyle: 'short' }).format(date)
 }
 
+export function isSizingQuote(quote) {
+  return quote?.kind === 'sizing' || quote?.productName === 'Home solar sizing'
+}
+
 export function isQuoteRequest({ subject, productSlug }) {
   if (String(productSlug || '').trim()) return true
   return /quote/i.test(subject || '')
-}
-
-export function peekOtp() {
-  if (typeof window === 'undefined') return null
-  try {
-    const pending = JSON.parse(sessionStorage.getItem(OTP_KEY) || 'null')
-    if (!pending?.email || !pending.expiresAt) return null
-    if (Date.parse(pending.expiresAt) <= Date.now()) {
-      sessionStorage.removeItem(OTP_KEY)
-      return null
-    }
-    return pending
-  } catch {
-    return null
-  }
-}
-
-function rememberOtp(pending) {
-  const stored = { email: pending.email, expiresAt: pending.expiresAt }
-  sessionStorage.setItem(OTP_KEY, JSON.stringify(stored))
-  return stored
-}
-
-export function forgetOtp() {
-  sessionStorage.removeItem(OTP_KEY)
 }
 
 export async function getSession() {
@@ -68,35 +76,11 @@ export async function loadDashboard() {
   return request('/api/admin/bootstrap')
 }
 
-export async function requestOtp({ email, password }) {
-  const pending = await request('/api/auth/login', { method: 'POST', body: { email, password } })
-  return rememberOtp(pending)
-}
-
-export async function verifyOtp(code) {
-  const pending = peekOtp()
-  if (!pending?.email) throw new Error('That code has expired. Request a new one.')
-  const session = await request('/api/auth/verify', {
-    method: 'POST',
-    body: { email: pending.email, code },
-  })
-  forgetOtp()
-  return session
-}
-
-export async function clearOtp() {
-  const pending = peekOtp()
-  forgetOtp()
-  if (!pending?.email) return
-  try {
-    await request('/api/auth/otp', { method: 'DELETE', body: { email: pending.email } })
-  } catch {
-    // The local step is already cleared. A leftover code expires on its own.
-  }
+export async function signIn({ email, password }) {
+  return request('/api/auth/login', { method: 'POST', body: { email, password } })
 }
 
 export async function logoutAdmin() {
-  forgetOtp()
   try {
     await request('/api/auth/logout', { method: 'POST' })
   } catch {
@@ -125,6 +109,35 @@ export function deleteProduct(id) {
   return request(`/api/products/${encodeURIComponent(id)}`, { method: 'DELETE' })
 }
 
+export function createPhase(input) {
+  return request('/api/phases', { method: 'POST', body: input })
+}
+
+export function savePhase(id, input) {
+  return request(`/api/phases/${encodeURIComponent(id)}`, { method: 'PUT', body: input })
+}
+
+export function deletePhase(id) {
+  return request(`/api/phases/${encodeURIComponent(id)}`, { method: 'DELETE' })
+}
+
+export function movePhase(id, direction) {
+  return request(`/api/phases/${encodeURIComponent(id)}/move`, { method: 'POST', body: { direction } })
+}
+
+export function saveStory(phaseId, input, id) {
+  if (id) return request(`/api/stories/${encodeURIComponent(id)}`, { method: 'PUT', body: input })
+  return request(`/api/phases/${encodeURIComponent(phaseId)}/stories`, { method: 'POST', body: input })
+}
+
+export function deleteStory(id) {
+  return request(`/api/stories/${encodeURIComponent(id)}`, { method: 'DELETE' })
+}
+
+export function moveStory(id, direction) {
+  return request(`/api/stories/${encodeURIComponent(id)}/move`, { method: 'POST', body: { direction } })
+}
+
 export function requestAccountChange(input) {
   return request('/api/settings/account', { method: 'POST', body: input })
 }
@@ -137,6 +150,10 @@ export function cancelAccountChange() {
   return request('/api/settings/account/otp', { method: 'DELETE' })
 }
 
+export function uploadImage(file) {
+  return uploadFile('/api/uploads', file).then((payload) => payload.url)
+}
+
 export function addQuote(input) {
   return request('/api/quotes', { method: 'POST', body: input })
 }
@@ -147,4 +164,8 @@ export function markQuoteRead(id) {
 
 export function deleteQuote(id) {
   return request(`/api/quotes/${encodeURIComponent(id)}`, { method: 'DELETE' })
+}
+
+export function replyToQuote(id, message) {
+  return request(`/api/quotes/${encodeURIComponent(id)}/reply`, { method: 'POST', body: { message } })
 }

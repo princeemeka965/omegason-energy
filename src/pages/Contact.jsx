@@ -67,7 +67,7 @@ export default function Contact() {
           '@context': 'https://schema.org',
           '@type': 'ContactPage',
           name: 'Contact Omegason Integrated Energy Services',
-          url: 'https://www.omegasonenergy.com/contact',
+          url: 'https://www.omegasonenergy.org/contact',
           mainEntity: {
             '@type': 'Organization',
             name: 'Omegason Integrated Energy Services Ltd',

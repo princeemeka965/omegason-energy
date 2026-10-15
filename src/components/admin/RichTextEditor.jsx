@@ -23,7 +23,7 @@ function ToolButton({ label, active, disabled, onClick, children }) {
   )
 }
 
-export default function RichTextEditor({ value, onChange, placeholder, label }) {
+export default function RichTextEditor({ value, onChange, placeholder, label, compact = false }) {
   const onChangeRef = useRef(onChange)
   onChangeRef.current = onChange
   const [linking, setLinking] = useState(false)
@@ -49,7 +49,7 @@ export default function RichTextEditor({ value, onChange, placeholder, label }) 
     content: value || '',
     editorProps: {
       attributes: {
-        class: 'rich-copy min-h-44 px-3 py-3 focus:outline-none',
+        class: `rich-copy px-3 py-3 focus:outline-none ${compact ? 'min-h-24' : 'min-h-44'}`,
         'aria-label': label || 'Rich text',
       },
     },
@@ -70,7 +70,7 @@ export default function RichTextEditor({ value, onChange, placeholder, label }) 
   }
 
   return (
-    <div className="rich-editor mt-1 overflow-hidden rounded-md border border-line bg-white focus-within:border-navy focus-within:shadow-[0_0_0_3px_rgba(11,37,69,.12)]">
+    <div className={`rich-editor mt-1 overflow-hidden rounded-md border border-line bg-white focus-within:border-navy focus-within:shadow-[0_0_0_3px_rgba(11,37,69,.12)] ${compact ? 'is-compact' : ''}`}>
       <div className="flex flex-wrap items-center gap-0.5 border-b border-line bg-paper p-1" role="toolbar" aria-label={`${label || 'Text'} formatting`}>
         <ToolButton label="Bold" disabled={!editor} active={editor?.isActive('bold')} onClick={() => editor.chain().focus().toggleBold().run()}>
           <Bold size={16} />
@@ -116,7 +116,7 @@ export default function RichTextEditor({ value, onChange, placeholder, label }) 
         </ToolButton>
       </div>
       {linking && (
-        <form onSubmit={applyLink} className="flex flex-wrap items-center gap-2 border-b border-line bg-white px-2 py-2">
+        <div className="flex flex-wrap items-center gap-2 border-b border-line bg-white px-2 py-2">
           <label className="min-w-0 flex-1 text-sm text-navy">
             <span className="sr-only">Link address</span>
             <input
@@ -127,7 +127,7 @@ export default function RichTextEditor({ value, onChange, placeholder, label }) 
               autoFocus
             />
           </label>
-          <button type="submit" className="btn btn-primary !px-3 !py-2">Apply</button>
+          <button type="button" className="btn btn-primary !px-3 !py-2" onClick={applyLink}>Apply</button>
           <button
             type="button"
             className="btn btn-outline !px-3 !py-2"
@@ -138,7 +138,7 @@ export default function RichTextEditor({ value, onChange, placeholder, label }) 
           >
             Remove
           </button>
-        </form>
+        </div>
       )}
       <EditorContent editor={editor} />
     </div>

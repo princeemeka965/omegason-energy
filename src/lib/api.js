@@ -2,9 +2,11 @@
 // stored by the admin API. If the API is down, the sample listings still render.
 import { useEffect, useState } from 'react'
 import { catalogCategories, mergeProducts, rememberCategories } from './catalog'
+import { fallbackPhases } from './phases'
 import { request } from './http'
 
 let catalogRequest = null
+let phasesRequest = null
 
 export function invalidateCatalog() {
   catalogRequest = null
@@ -86,6 +88,39 @@ export function useProduct(slug) {
     }
   }, [slug])
   return state
+}
+
+export function invalidatePhases() {
+  phasesRequest = null
+}
+
+export function fetchPhases() {
+  if (phasesRequest) return phasesRequest
+  const run = request('/api/phases')
+    .then((data) => (Array.isArray(data.phases) ? data.phases : fallbackPhases))
+    .catch(() => {
+      phasesRequest = null
+      return fallbackPhases
+    })
+  phasesRequest = run
+  return run
+}
+
+export function usePhases() {
+  const [phases, setPhases] = useState(fallbackPhases)
+  const [loading, setLoading] = useState(true)
+  useEffect(() => {
+    let alive = true
+    fetchPhases().then((list) => {
+      if (!alive) return
+      setPhases(list)
+      setLoading(false)
+    })
+    return () => {
+      alive = false
+    }
+  }, [])
+  return { phases, loading }
 }
 
 export function formatPrice(price) {

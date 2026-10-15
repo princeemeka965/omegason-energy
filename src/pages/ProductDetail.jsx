@@ -1,9 +1,10 @@
+import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { Check, MessageCircle } from 'lucide-react'
+import { Check } from 'lucide-react'
 import ProductCard, { ProductImage } from '../components/ProductCard'
+import QuoteModal from '../components/QuoteModal'
 import Seo from '../components/Seo'
 import NotFound from './NotFound'
-import { site } from '../data/site'
 import { formatPrice, useProduct, useProducts } from '../lib/api'
 import { categoryLabel } from '../lib/catalog'
 import { sanitizeHtml } from '../lib/sanitize'
@@ -13,6 +14,7 @@ export default function ProductDetail() {
   const { slug } = useParams()
   const { product, loading } = useProduct(slug)
   const { products } = useProducts()
+  const [quoteOpen, setQuoteOpen] = useState(false)
 
   if (loading && !product) return <div className="min-h-[50vh] bg-paper px-6 py-20 text-muted md:px-10">Loading product…</div>
   if (!product) return <NotFound message="We could not find that product." backTo="/products" backLabel="Back to products" />
@@ -21,7 +23,6 @@ export default function ProductDetail() {
   const price = formatPrice(product.price)
   const description = plainText(product.descriptionHtml || product.description)
   const related = products.filter((p) => p.category === product.category && p.slug !== product.slug).slice(0, 3)
-  const wa = `https://wa.me/${site.whatsapp}?text=${encodeURIComponent(`Hello Omegason, I would like a quote for: ${product.name}`)}`
 
   const productJsonLd = {
     '@context': 'https://schema.org',
@@ -30,7 +31,7 @@ export default function ProductDetail() {
     description,
     category: categoryName,
     brand: { '@type': 'Brand', name: 'Omegason' },
-    url: `https://www.omegasonenergy.com/products/${product.slug}`,
+    url: `https://www.omegasonenergy.org/products/${product.slug}`,
     ...(product.price
       ? {
           offers: {
@@ -38,7 +39,7 @@ export default function ProductDetail() {
             priceCurrency: 'NGN',
             price: product.price,
             availability: 'https://schema.org/InStock',
-            url: `https://www.omegasonenergy.com/products/${product.slug}`,
+            url: `https://www.omegasonenergy.org/products/${product.slug}`,
           },
         }
       : {}),
@@ -76,12 +77,10 @@ export default function ProductDetail() {
                 <p className="mt-4 text-lg leading-relaxed text-muted">{product.description}</p>
               )}
               <p className="mt-6 font-display text-3xl font-semibold text-navy">{price || 'Request a quote'}</p>
-              <div className="mt-6 flex flex-wrap gap-3">
-                <Link to={`/contact?product=${product.slug}`} className="btn btn-primary">Request a quote</Link>
-                <a href={wa} target="_blank" rel="noreferrer" className="btn btn-outline">
-                  <MessageCircle size={18} aria-hidden="true" /> Ask on WhatsApp
-                </a>
+              <div className="mt-6">
+                <button type="button" className="btn btn-primary" onClick={() => setQuoteOpen(true)}>Request a quote</button>
               </div>
+              {quoteOpen && <QuoteModal product={product} onClose={() => setQuoteOpen(false)} />}
               {product.features?.length > 0 && (
                 <ul className="mt-8 space-y-3">
                   {product.features.map((f) => (

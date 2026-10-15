@@ -3,11 +3,11 @@ import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { ImagePlus } from 'lucide-react'
 import RichTextEditor from '../../components/admin/RichTextEditor'
 import { useAdmin } from '../../lib/adminContext'
-import { slugify } from '../../lib/adminStore'
+import { slugify, uploadImage } from '../../lib/adminStore'
 import { sanitizeHtml } from '../../lib/sanitize'
 import { isEmptyHtml } from '../../lib/text'
 
-const IMAGE_LIMIT = 600 * 1024
+const IMAGE_LIMIT = 8 * 1024 * 1024
 
 export default function ProductFormPage() {
   const { id } = useParams()
@@ -55,28 +55,25 @@ function ProductForm({ product }) {
     if (!slugEdited) setSlug(slugify(value))
   }
 
-  function onFile(file) {
+  async function onFile(file) {
     setImageError('')
     if (!file) return
-    if (!file.type.startsWith('image/')) {
-      setImageError('Choose an image file.')
+    if (!['image/jpeg', 'image/png', 'image/webp', 'image/gif'].includes(file.type)) {
+      setImageError('Choose a JPEG, PNG, WebP, or GIF.')
       return
     }
     if (file.size > IMAGE_LIMIT) {
-      setImageError('Use an image under 600 KB, or paste a path such as /products/panel.jpg.')
+      setImageError('Use an image under 8 MB.')
       return
     }
-    const reader = new FileReader()
     setReading(true)
-    reader.onload = () => {
-      setImage(String(reader.result || ''))
+    try {
+      setImage(await uploadImage(file))
+    } catch (err) {
+      setImageError(err.message)
+    } finally {
       setReading(false)
     }
-    reader.onerror = () => {
-      setImageError('That image could not be read.')
-      setReading(false)
-    }
-    reader.readAsDataURL(file)
   }
 
   async function onSubmit(event) {
@@ -215,7 +212,7 @@ function ProductForm({ product }) {
             )}
             <input ref={fileRef} type="file" accept="image/*" tabIndex={-1} className="sr-only" onChange={(event) => onFile(event.target.files?.[0])} />
             <button type="button" className="btn btn-outline mt-3 w-full" disabled={reading || saving} aria-busy={reading} onClick={() => fileRef.current?.click()}>
-              <ImagePlus size={16} aria-hidden="true" /> {reading ? 'Reading image…' : 'Upload image'}
+              <ImagePlus size={16} aria-hidden="true" /> {reading ? 'Uploading…' : 'Upload image'}
             </button>
             <label className="mt-4 block text-sm font-semibold text-navy">
               Or image path

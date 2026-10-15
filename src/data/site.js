@@ -1,4 +1,4 @@
-// Company content, taken from omegasonenergy.com. Edit copy here, not in the pages.
+// Company content, taken from omegasonenergy.org. Edit copy here, not in the pages.
 
 export const site = {
   name: 'Omegason Integrated Energy Services',
@@ -8,15 +8,15 @@ export const site = {
   fax: '+234 8072222271',
   whatsapp: '2347034867694',
   email: '',
-  website: 'https://www.omegasonenergy.com',
-  url: 'https://www.omegasonenergy.com',
+  website: 'https://www.omegasonenergy.org',
+  url: 'https://www.omegasonenergy.org',
   social: {
     x: '',
     facebook: '',
     linkedin: '',
   },
   technicalPdf:
-    'https://www.omegasonenergy.com/images/omegasonDocs/TECHNICALITIES_IN_EXECUTION_OF_1_MEGAWATT_INTERCONNECTED_SOLAR.pdf',
+    'https://www.omegasonenergy.org/images/omegasonDocs/TECHNICALITIES_IN_EXECUTION_OF_1_MEGAWATT_INTERCONNECTED_SOLAR.pdf',
 }
 
 export const welcome = {
@@ -25,6 +25,24 @@ export const welcome = {
   lead: 'Omegason Integrated Energy Services Ltd welcomes you to a future where clean, reliable, and affordable energy drives communities and businesses forward.',
   focus: 'Solar, Hydro, and Electro Grids.',
 }
+
+export const heroSlides = [
+  {
+    src: '/media/hybrid.jpg',
+    alt: 'Solar arrays, wind turbines and a hydroelectric dam operating together',
+    caption: 'Solar, Hydro, and Electro Grids.',
+  },
+  {
+    src: '/products/panel-farm.jpg',
+    alt: 'Rows of ground-mounted solar panels in an open field',
+    caption: 'Ground-mounted solar arrays.',
+  },
+  {
+    src: '/products/panel-install.jpg',
+    alt: 'Solar panels across an industrial rooftop at sunrise',
+    caption: 'Solar on industrial roofs.',
+  },
+]
 
 export const offices = [
   { label: 'Head office', address: '180 Agbani Road, Enugu, Enugu State, Nigeria' },
@@ -169,6 +187,7 @@ export const divisions = [
   },
 ]
 
+// Offline copy of the project notes. The site reads published phases from the admin API.
 export const projects = [
   {
     id: 'university',

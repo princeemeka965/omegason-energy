@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import { Inbox, LogOut, Menu, Package, Settings, Tags, X } from 'lucide-react'
+import { Inbox, Layers, LogOut, Menu, Package, Settings, Sun, Tags, X } from 'lucide-react'
 import Logo from '../Logo'
 import Seo from '../Seo'
 import { useAdmin } from '../../lib/adminContext'
@@ -8,12 +8,14 @@ import { useAdmin } from '../../lib/adminContext'
 const links = [
   { to: '/auth/admin/products', label: 'Products', icon: Package },
   { to: '/auth/admin/categories', label: 'Categories', icon: Tags },
+  { to: '/auth/admin/phases', label: 'Phases', icon: Layers },
   { to: '/auth/admin/quotes', label: 'Quotes', icon: Inbox },
+  { to: '/auth/admin/sizing', label: 'Solar sizing', icon: Sun },
   { to: '/auth/admin/settings', label: 'Settings', icon: Settings },
 ]
 
 export default function AdminShell({ children }) {
-  const { session, logoutAdmin, unreadQuotes, settings } = useAdmin()
+  const { session, logoutAdmin, unreadQuotes, unreadSizing, settings } = useAdmin()
   const [open, setOpen] = useState(false)
   const [signingOut, setSigningOut] = useState(false)
   const [desktop, setDesktop] = useState(() => window.matchMedia('(min-width: 1024px)').matches)
@@ -34,12 +36,12 @@ export default function AdminShell({ children }) {
   }, [open])
 
   return (
-    <div className="min-h-screen bg-paper lg:grid lg:grid-cols-[16.5rem_1fr]">
+    <div className="min-h-screen bg-paper">
       <Seo title="Admin" description="Omegason catalogue admin." path="/auth/admin" noindex />
       {open && <button type="button" className="fixed inset-0 z-30 bg-navy/40 lg:hidden" aria-label="Close menu" onClick={() => setOpen(false)} />}
       <aside
         inert={!desktop && !open ? true : undefined}
-        className={`${open ? 'translate-x-0' : '-translate-x-full'} fixed inset-y-0 left-0 z-40 flex w-64 flex-col bg-navy text-white transition-transform lg:static lg:translate-x-0`}
+        className={`${open ? 'translate-x-0' : '-translate-x-full'} fixed inset-y-0 left-0 z-40 flex w-64 flex-col overflow-y-auto bg-navy text-white transition-transform lg:w-[16.5rem] lg:translate-x-0`}
       >
         <div className="flex items-center justify-between border-b border-white/10 px-5 py-5">
           <NavLink to="/" className="text-white" onClick={() => setOpen(false)}>
@@ -70,6 +72,9 @@ export default function AdminShell({ children }) {
                     {link.to.endsWith('/quotes') && unreadQuotes > 0 && (
                       <span className="ml-auto bg-brass px-1.5 py-0.5 text-xs text-white">{unreadQuotes}</span>
                     )}
+                    {link.to.endsWith('/sizing') && unreadSizing > 0 && (
+                      <span className="ml-auto bg-brass px-1.5 py-0.5 text-xs text-white">{unreadSizing}</span>
+                    )}
                   </NavLink>
                 </li>
               )
@@ -99,7 +104,7 @@ export default function AdminShell({ children }) {
         </div>
       </aside>
 
-      <div className="min-w-0">
+      <div className="min-w-0 lg:pl-[16.5rem]">
         <header className="sticky top-0 z-20 flex items-center justify-between border-b border-line bg-white px-4 py-3 lg:hidden">
           <button type="button" className="rounded-md p-2 text-navy" aria-label="Open menu" onClick={() => setOpen(true)}>
             <Menu size={22} />

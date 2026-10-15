@@ -1,24 +1,29 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import { invalidateCatalog } from './api'
+import { invalidateCatalog, invalidatePhases } from './api'
 import {
-  clearOtp,
+  cancelAccountChange,
+  confirmAccountChange,
   createCategory,
+  createPhase,
   deleteCategory,
+  deletePhase,
   deleteProduct,
   deleteQuote,
-  forgetOtp,
+  deleteStory,
   getSession,
+  isSizingQuote,
   loadDashboard,
   logoutAdmin,
   markQuoteRead,
-  peekOtp,
+  movePhase,
+  replyToQuote,
+  moveStory,
   renameCategory,
   requestAccountChange,
-  requestOtp,
+  signIn as signInRequest,
+  savePhase,
   saveProduct,
-  verifyOtp,
-  cancelAccountChange,
-  confirmAccountChange,
+  saveStory,
 } from './adminStore'
 
 const AdminContext = createContext(null)
@@ -27,16 +32,16 @@ const EMPTY = {
   ready: false,
   loadError: '',
   session: null,
-  pendingOtp: null,
   categories: [],
   products: [],
   quotes: [],
   settings: { quotesEmail: '' },
   account: { name: '', email: '' },
+  phases: [],
 }
 
 export function AdminProvider({ children }) {
-  const [state, setState] = useState(() => ({ ...EMPTY, pendingOtp: peekOtp() }))
+  const [state, setState] = useState(EMPTY)
 
   const applyDashboard = useCallback((session, data) => {
     setState((current) => ({
@@ -49,6 +54,7 @@ export function AdminProvider({ children }) {
       quotes: data.quotes,
       settings: data.settings,
       account: data.account || { name: '', email: session?.email || '' },
+      phases: data.phases || [],
     }))
   }, [])
 
@@ -61,6 +67,7 @@ export function AdminProvider({ children }) {
       quotes: data.quotes,
       settings: data.settings,
       account: data.account || current.account,
+      phases: data.phases || [],
     }))
     return data
   }, [])
@@ -88,29 +95,17 @@ export function AdminProvider({ children }) {
 
   const actions = useMemo(() => {
     return {
-      requestOtp: async (input) => {
-        const pending = await requestOtp(input)
-        setState((current) => ({ ...current, pendingOtp: pending }))
-        return pending
-      },
-      verifyOtp: async (code) => {
-        const session = await verifyOtp(code)
+      signIn: async (input) => {
+        const session = await signInRequest(input)
         const data = await loadDashboard()
         applyDashboard(session, data)
-        setState((current) => ({ ...current, pendingOtp: null }))
         return session
-      },
-      clearOtp: async () => {
-        await clearOtp()
-        setState((current) => ({ ...current, pendingOtp: null }))
       },
       logoutAdmin: async () => {
         await logoutAdmin()
-        forgetOtp()
         setState((current) => ({
           ...EMPTY,
           ready: true,
-          pendingOtp: null,
         }))
       },
       createCategory: async (label) => {
@@ -139,6 +134,44 @@ export function AdminProvider({ children }) {
         invalidateCatalog()
         await refresh()
       },
+      createPhase: async (input) => {
+        const phase = await createPhase(input)
+        invalidatePhases()
+        await refresh()
+        return phase
+      },
+      savePhase: async (id, input) => {
+        const phase = await savePhase(id, input)
+        invalidatePhases()
+        await refresh()
+        return phase
+      },
+      deletePhase: async (id) => {
+        await deletePhase(id)
+        invalidatePhases()
+        await refresh()
+      },
+      movePhase: async (id, direction) => {
+        await movePhase(id, direction)
+        invalidatePhases()
+        await refresh()
+      },
+      saveStory: async (phaseId, input, id) => {
+        const phase = await saveStory(phaseId, input, id)
+        invalidatePhases()
+        await refresh()
+        return phase
+      },
+      deleteStory: async (id) => {
+        await deleteStory(id)
+        invalidatePhases()
+        await refresh()
+      },
+      moveStory: async (id, direction) => {
+        await moveStory(id, direction)
+        invalidatePhases()
+        await refresh()
+      },
       markQuoteRead: async (id) => {
         await markQuoteRead(id)
         await refresh()
@@ -146,6 +179,11 @@ export function AdminProvider({ children }) {
       deleteQuote: async (id) => {
         await deleteQuote(id)
         await refresh()
+      },
+      replyToQuote: async (id, message) => {
+        const result = await replyToQuote(id, message)
+        await refresh()
+        return result
       },
       requestAccountChange: (input) => requestAccountChange(input),
       confirmAccountChange: async (code) => {
@@ -163,8 +201,9 @@ export function AdminProvider({ children }) {
   }, [applyDashboard, refresh])
 
   const value = useMemo(() => {
-    const unreadQuotes = state.quotes.filter((quote) => !quote.read).length
-    return { ...state, unreadQuotes, ...actions }
+    const unreadQuotes = state.quotes.filter((quote) => !isSizingQuote(quote) && !quote.read).length
+    const unreadSizing = state.quotes.filter((quote) => isSizingQuote(quote) && !quote.read).length
+    return { ...state, unreadQuotes, unreadSizing, ...actions }
   }, [state, actions])
 
   return <AdminContext.Provider value={value}>{children}</AdminContext.Provider>

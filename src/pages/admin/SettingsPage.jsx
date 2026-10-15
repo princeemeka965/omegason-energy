@@ -158,7 +158,7 @@ export default function SettingsPage() {
               type="email"
               value={quotesEmail}
               onChange={(event) => setQuotesEmail(event.target.value)}
-              placeholder="quotes@omegasonenergy.com"
+              placeholder="quotes@omegasonenergy.org"
               autoComplete="email"
               className="field"
               disabled={sending}

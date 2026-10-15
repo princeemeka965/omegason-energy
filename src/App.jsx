@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import { organizationJsonLd } from './components/Seo'
+import { syncAdminPresence } from './lib/adminStore'
 import Home from './pages/Home'
 
 const About = lazy(() => import('./pages/About'))
@@ -18,6 +19,10 @@ const AdminApp = lazy(() => import('./pages/admin/AdminApp'))
 export default function App() {
   const location = useLocation()
   const isAdmin = location.pathname === '/auth/admin' || location.pathname.startsWith('/auth/admin/')
+
+  useEffect(() => {
+    syncAdminPresence(location.pathname)
+  }, [location.pathname])
 
   useEffect(() => {
     const id = 'seo-organization'

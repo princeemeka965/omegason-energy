@@ -3,8 +3,9 @@ import Hero from '../components/Hero'
 import Seo from '../components/Seo'
 import Icon from '../components/Icon'
 import ProductCard from '../components/ProductCard'
-import { divisions, focusAreas, mission, offices, projects, welcome } from '../data/site'
-import { useProducts } from '../lib/api'
+import { divisions, focusAreas, mission, offices, welcome } from '../data/site'
+import { usePhases, useProducts } from '../lib/api'
+import { homePhase, homeStories } from '../lib/phases'
 
 function SectionLabel({ children }) {
   return <p className="text-sm font-semibold uppercase tracking-[0.16em] text-brass">{children}</p>
@@ -12,8 +13,10 @@ function SectionLabel({ children }) {
 
 export default function Home() {
   const { products } = useProducts()
+  const { phases } = usePhases()
   const featured = products.filter((p) => p.featured).slice(0, 3)
-  const stories = projects.filter((p) => ['university', 'classrooms', 'business'].includes(p.id))
+  const phase = homePhase(phases)
+  const stories = homeStories(phase)
 
   return (
     <>
@@ -98,27 +101,33 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="border-y border-line bg-paper px-6 py-20 md:px-10">
-        <div className="mx-auto max-w-7xl">
-          <SectionLabel>Phase One</SectionLabel>
-          <h2 className="mt-3 max-w-2xl font-display text-3xl font-semibold text-navy md:text-4xl">
-            What changed when the power stayed on
-          </h2>
-          <div className="mt-10 grid gap-6 md:grid-cols-3">
-            {stories.map((story) => (
-              <article key={story.id} className="border border-line bg-white">
-                <img src={story.image} alt={story.title} className="aspect-[16/10] w-full object-cover" />
-                <div className="p-6">
-                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brass">{story.tag}</p>
-                  <h3 className="mt-2 font-display text-xl font-semibold text-navy">{story.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-muted">{story.summary}</p>
-                </div>
-              </article>
-            ))}
+      {phase && stories.length > 0 && (
+        <section className="border-y border-line bg-paper px-6 py-20 md:px-10">
+          <div className="mx-auto max-w-7xl">
+            <SectionLabel>{phase.name}</SectionLabel>
+            <h2 className="mt-3 max-w-2xl font-display text-3xl font-semibold text-navy md:text-4xl">
+              {phase.headline}
+            </h2>
+            <div className="mt-10 grid gap-6 md:grid-cols-3">
+              {stories.map((story) => (
+                <article key={story.id} className="border border-line bg-white">
+                  {story.image ? (
+                    <img src={story.image} alt={story.title} className="aspect-[16/10] w-full object-cover" />
+                  ) : (
+                    <div className="aspect-[16/10] bg-white" />
+                  )}
+                  <div className="p-6">
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brass">{phase.name}</p>
+                    <h3 className="mt-2 font-display text-xl font-semibold text-navy">{story.title}</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-muted">{story.summary}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
+            <Link to="/projects" className="btn btn-primary mt-8">Read the project notes</Link>
           </div>
-          <Link to="/projects" className="btn btn-primary mt-8">Read the project notes</Link>
-        </div>
-      </section>
+        </section>
+      )}
 
       {featured.length > 0 && (
         <section className="bg-white px-6 py-20 md:px-10">

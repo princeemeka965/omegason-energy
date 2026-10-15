@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useState } from 'react'
 import Pager from '../../components/admin/Pager'
 import { useAdmin } from '../../lib/adminContext'
-import { formatWhen } from '../../lib/adminStore'
+import { formatWhen, isSizingQuote } from '../../lib/adminStore'
 
 const PAGE_SIZE = 8
 
 export default function QuotesPage() {
-  const { quotes, unreadQuotes, markQuoteRead, deleteQuote } = useAdmin()
+  const { quotes: allQuotes, markQuoteRead, deleteQuote } = useAdmin()
+  const quotes = useMemo(() => allQuotes.filter((quote) => !isSizingQuote(quote)), [allQuotes])
+  const unreadQuotes = quotes.filter((quote) => !quote.read).length
   const [error, setError] = useState('')
   const [filter, setFilter] = useState('all')
   const [query, setQuery] = useState('')
@@ -23,7 +25,7 @@ export default function QuotesPage() {
     return quotes.filter((quote) => {
       if (filter === 'unread' && quote.read) return false
       if (!q) return true
-      return `${quote.name} ${quote.email} ${quote.subject} ${quote.productName} ${quote.message}`.toLowerCase().includes(q)
+      return `${quote.name} ${quote.email} ${quote.phone || ''} ${quote.state || ''} ${quote.subject} ${quote.productName} ${quote.message}`.toLowerCase().includes(q)
     })
   }, [quotes, filter, query])
 
@@ -44,7 +46,7 @@ export default function QuotesPage() {
       <p className="text-sm font-semibold uppercase tracking-[0.14em] text-brass">Inbox</p>
       <h1 className="mt-1 font-display text-3xl font-semibold text-navy">Quote requests</h1>
       <p className="mt-2 max-w-2xl text-sm text-muted">
-        Requests from the contact form are stored here. The address they are sent to is set under Settings.
+        Product and contact requests are stored here. Solar sizing requests have their own page. The address they are sent to is set under Settings.
       </p>
       {error && <p role="alert" className="mt-4 border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-900">{error}</p>}
 
@@ -87,6 +89,18 @@ export default function QuotesPage() {
                           <dt className="text-muted">From</dt>
                           <dd className="font-semibold text-navy">{quote.email}</dd>
                         </div>
+                        {quote.phone && (
+                          <div>
+                            <dt className="text-muted">Phone</dt>
+                            <dd className="font-semibold text-navy">{quote.phone}</dd>
+                          </div>
+                        )}
+                        {quote.state && (
+                          <div>
+                            <dt className="text-muted">State</dt>
+                            <dd className="font-semibold text-navy">{quote.state}</dd>
+                          </div>
+                        )}
                         <div>
                           <dt className="text-muted">Addressed to</dt>
                           <dd className="font-semibold text-navy">{quote.destinationEmail || 'Waiting for a quotes inbox'}</dd>
