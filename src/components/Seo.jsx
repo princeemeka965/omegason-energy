@@ -46,16 +46,26 @@ export function organizationJsonLd() {
   }
 }
 
+export function absoluteUrl(pathOrUrl) {
+  return absolute(pathOrUrl)
+}
+
+const ARTICLE_META = ['article:published_time', 'article:modified_time', 'article:section']
+
 export default function Seo({
   title,
   description,
   path = '/',
   image = '/media/hybrid.jpg',
+  imageAlt = '',
   type = 'website',
+  article,
   jsonLd,
   noindex = false,
 }) {
   const payload = jsonLd ? JSON.stringify(jsonLd) : ''
+  const published = article?.publishedTime || ''
+  const modified = article?.modifiedTime || ''
 
   useEffect(() => {
     const fullTitle = title.includes('Omegason') ? title : `${title} | Omegason Integrated Energy Services`
@@ -70,6 +80,9 @@ export default function Seo({
     upsertMeta('property', 'og:type', type)
     upsertMeta('property', 'og:url', url)
     upsertMeta('property', 'og:image', imageUrl)
+    upsertMeta('property', 'og:image:alt', imageAlt)
+    const articleValues = type === 'article' ? [published, modified || published, 'Blog'] : []
+    ARTICLE_META.forEach((key, index) => upsertMeta('property', key, articleValues[index] || ''))
     upsertMeta('property', 'og:site_name', site.name)
     upsertMeta('property', 'og:locale', 'en_NG')
     upsertMeta('name', 'twitter:card', 'summary_large_image')
@@ -98,7 +111,7 @@ export default function Seo({
     } else {
       script?.remove()
     }
-  }, [title, description, path, image, type, payload, noindex])
+  }, [title, description, path, image, imageAlt, type, published, modified, payload, noindex])
 
   return null
 }

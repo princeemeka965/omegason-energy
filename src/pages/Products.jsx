@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Search } from 'lucide-react'
+import OfflineNote from '../components/OfflineNote'
 import PageHeader from '../components/PageHeader'
 import Seo from '../components/Seo'
 import ProductCard from '../components/ProductCard'
@@ -10,7 +11,7 @@ import { useCategories, useProducts } from '../lib/api'
 const PAGE_SIZE = 12
 
 export default function Products() {
-  const { products, loading } = useProducts()
+  const { products, loading, error, offline } = useProducts()
   const categories = useCategories()
   const [category, setCategory] = useState('all')
   const [query, setQuery] = useState('')
@@ -88,6 +89,7 @@ export default function Products() {
             </label>
           </div>
 
+          <OfflineNote show={offline} className="mt-8" />
           {loading && <p className="mt-10 text-muted">Loading products…</p>}
 
           <motion.div layout className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -130,7 +132,21 @@ export default function Products() {
             </nav>
           )}
 
-          {!loading && shown.length === 0 && (
+          {!loading && products.length === 0 && (
+            <div className="mt-10 border border-line bg-white p-10 text-center">
+              <p className="font-display text-2xl font-semibold text-navy">
+                {error ? 'The catalogue could not be loaded' : 'Products are on the way'}
+              </p>
+              <p className="mt-2 text-muted">
+                {error ? 'Refresh the page in a moment, or tell us what you need.' : 'Tell us what you need and we will source it.'}
+              </p>
+              <div className="mt-6 flex justify-center gap-3">
+                <Link to="/contact" className="btn btn-primary">Contact us</Link>
+              </div>
+            </div>
+          )}
+
+          {!loading && products.length > 0 && shown.length === 0 && (
             <div className="mt-10 border border-line bg-white p-10 text-center">
               <p className="font-display text-2xl font-semibold text-navy">No products match that search</p>
               <p className="mt-2 text-muted">Clear the filters, or tell us what you need and we will source it.</p>

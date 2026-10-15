@@ -5,6 +5,7 @@ import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import { organizationJsonLd } from './components/Seo'
 import { syncAdminPresence } from './lib/adminStore'
+import { fetchSite } from './lib/api'
 import Home from './pages/Home'
 
 const About = lazy(() => import('./pages/About'))
@@ -12,6 +13,8 @@ const Services = lazy(() => import('./pages/Services'))
 const Products = lazy(() => import('./pages/Products'))
 const ProductDetail = lazy(() => import('./pages/ProductDetail'))
 const Projects = lazy(() => import('./pages/Projects'))
+const Blog = lazy(() => import('./pages/Blog'))
+const BlogPost = lazy(() => import('./pages/BlogPost'))
 const Contact = lazy(() => import('./pages/Contact'))
 const NotFound = lazy(() => import('./pages/NotFound'))
 const AdminApp = lazy(() => import('./pages/admin/AdminApp'))
@@ -23,6 +26,10 @@ export default function App() {
   useEffect(() => {
     syncAdminPresence(location.pathname)
   }, [location.pathname])
+
+  useEffect(() => {
+    if (!isAdmin) fetchSite().catch(() => {})
+  }, [isAdmin])
 
   useEffect(() => {
     const id = 'seo-organization'
@@ -65,6 +72,8 @@ export default function App() {
               <Route path="/products" element={<Products />} />
               <Route path="/products/:slug" element={<ProductDetail />} />
               <Route path="/projects" element={<Projects />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/blog/:slug" element={<BlogPost />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="*" element={<NotFound />} />
             </Routes>

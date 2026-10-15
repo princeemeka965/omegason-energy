@@ -8,6 +8,8 @@
 # Any path that is not a real file serves the React app, so reloads and
 # shared deep links (/products/solar-street-light) work.
 # The API address is VITE_API_URL, set in the Netlify environment before the build.
+# The blog edge functions (netlify/edge-functions) read the same variable at request
+# time, or API_URL if set, so its scope must include Functions as well as Builds.
 [[redirects]]
   from = "/*"
   to = "/index.html"

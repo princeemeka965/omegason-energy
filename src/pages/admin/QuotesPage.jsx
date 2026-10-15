@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import Pager from '../../components/admin/Pager'
+import QuoteReplyForm from '../../components/admin/QuoteReplyForm'
 import { useAdmin } from '../../lib/adminContext'
 import { formatWhen, isSizingQuote } from '../../lib/adminStore'
 
@@ -46,7 +47,7 @@ export default function QuotesPage() {
       <p className="text-sm font-semibold uppercase tracking-[0.14em] text-brass">Inbox</p>
       <h1 className="mt-1 font-display text-3xl font-semibold text-navy">Quote requests</h1>
       <p className="mt-2 max-w-2xl text-sm text-muted">
-        Product and contact requests are stored here. Solar sizing requests have their own page. The address they are sent to is set under Settings.
+        Product and contact requests are stored here. Solar sizing requests have their own page. The address they are sent to is set under Settings. A reply to a product request is emailed to the customer with the product photo.
       </p>
       {error && <p role="alert" className="mt-4 border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-900">{error}</p>}
 
@@ -70,10 +71,12 @@ export default function QuotesPage() {
           <ul>
             {rows.map((quote) => {
               const open = openId === quote.id
+              const image = quote.kind === 'product' ? quote.productImage : null
               return (
                 <li key={quote.id} className="border-b border-line last:border-b-0">
                   <button type="button" onClick={() => toggle(quote)} className="flex w-full items-start gap-3 px-4 py-4 text-left hover:bg-paper" aria-expanded={open}>
                     <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${quote.read ? 'bg-line' : 'bg-brass'}`} aria-hidden="true" />
+                    {image && <img src={image} alt="" className="h-10 w-10 shrink-0 border border-line object-cover" loading="lazy" />}
                     <span className="min-w-0 flex-1">
                       <span className="flex flex-wrap items-baseline justify-between gap-2">
                         <span className="font-semibold text-navy">{quote.name}</span>
@@ -81,6 +84,7 @@ export default function QuotesPage() {
                       </span>
                       <span className="mt-1 block truncate text-sm text-muted">{quote.subject}</span>
                     </span>
+                    {quote.repliedAt && <span className="shrink-0 text-xs font-semibold uppercase tracking-[0.12em] text-brass">Replied</span>}
                   </button>
                   {open && (
                     <div className="border-t border-line bg-paper px-4 py-4 sm:pl-9">
@@ -109,10 +113,16 @@ export default function QuotesPage() {
                           <div className="sm:col-span-2">
                             <dt className="text-muted">Product</dt>
                             <dd className="font-semibold text-navy">{quote.productName}</dd>
+                            {image && (
+                              <img src={image} alt={quote.productName} className="mt-2 w-full max-w-xs border border-line bg-white object-cover" loading="lazy" />
+                            )}
                           </div>
                         )}
                       </dl>
                       <p className="mt-4 whitespace-pre-wrap text-sm leading-relaxed text-ink">{quote.message}</p>
+                      {quote.kind === 'product' && (
+                        <QuoteReplyForm key={quote.id} quote={quote} placeholder="Write your quote for this product." />
+                      )}
                       <button
                         type="button"
                         className="mt-4 text-sm font-semibold text-red-800 disabled:cursor-wait disabled:opacity-60"

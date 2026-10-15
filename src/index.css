@@ -150,6 +150,15 @@ input:disabled {
   padding-left: 0.9rem;
 }
 .rich-copy :where(strong, b) { color: var(--color-ink); }
+.rich-copy :where(img) { display: block; max-width: 100%; height: auto; margin: 1.5rem 0; }
+.rich-editor .ProseMirror img.ProseMirror-selectednode { outline: 3px solid var(--color-brass); outline-offset: 2px; }
+.article-copy { font-size: 1.125rem; line-height: 1.8; color: var(--color-ink); }
+.article-copy :where(p + p) { margin-top: 1.1rem; }
+.article-copy :where(h2) { font-size: 1.75rem; margin: 2.25rem 0 0.6rem; }
+.article-copy :where(h3) { font-size: 1.35rem; margin: 1.75rem 0 0.5rem; }
+.article-copy :where(ul, ol) { margin: 1rem 0 1rem 1.5rem; }
+.article-copy :where(blockquote) { margin: 1.5rem 0; font-size: 1.25rem; font-style: italic; color: var(--color-navy); }
+.article-copy :where(img) { width: 100%; margin: 2rem 0; }
 .rich-on-navy { color: rgb(255 255 255 / 0.8); }
 .rich-on-navy :where(h2, h3, strong, b) { color: #fff; }
 .rich-on-navy :where(a) { color: #fff; text-decoration-color: var(--color-brass-soft); }

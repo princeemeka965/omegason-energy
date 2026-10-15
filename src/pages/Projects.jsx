@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { FileText } from 'lucide-react'
+import OfflineNote from '../components/OfflineNote'
 import PageHeader from '../components/PageHeader'
 import Seo from '../components/Seo'
 import { site } from '../data/site'
@@ -7,11 +8,11 @@ import { usePhases } from '../lib/api'
 import { sanitizeHtml } from '../lib/sanitize'
 import { looksLikeHtml, plainText } from '../lib/text'
 
-function RichCopy({ value, paragraphs, className }) {
+function RichCopy({ value, className }) {
   if (looksLikeHtml(value)) {
     return <div className={`rich-copy ${className || ''}`} dangerouslySetInnerHTML={{ __html: sanitizeHtml(value) }} />
   }
-  const parts = paragraphs?.length ? paragraphs : String(value || '').split(/\n\s*\n/).map((part) => part.trim()).filter(Boolean)
+  const parts = String(value || '').split(/\n\s*\n/).map((part) => part.trim()).filter(Boolean)
   if (parts.length === 0) return null
   return (
     <div className={className}>
@@ -23,7 +24,7 @@ function RichCopy({ value, paragraphs, className }) {
 }
 
 export default function Projects() {
-  const { phases } = usePhases()
+  const { phases, loading, error, offline } = usePhases()
   const single = phases.length === 1 ? phases[0] : null
   const cover = phases.flatMap((phase) => phase.stories).find((story) => story.image)?.image || '/media/healthcare.jpg'
   const title = single ? `${single.name} Energy Projects` : 'Energy Projects'
@@ -38,9 +39,17 @@ export default function Projects() {
         {single ? <RichCopy value={single.lead} className="rich-on-navy" /> : 'Project notes from each phase of the work.'}
       </PageHeader>
 
+      {offline && (
+        <div className="bg-white px-6 pt-10 md:px-10">
+          <OfflineNote show className="mx-auto max-w-7xl" />
+        </div>
+      )}
+
       {phases.length === 0 && (
         <section className="bg-white px-6 py-16 md:px-10">
-          <p className="mx-auto max-w-7xl text-lg text-muted">Project notes will appear here.</p>
+          <p role={error ? 'alert' : undefined} className="mx-auto max-w-7xl text-lg text-muted">
+            {loading ? 'Loading project notes…' : error ? 'The project notes could not be loaded. Refresh the page in a moment.' : 'Project notes will appear here.'}
+          </p>
         </section>
       )}
 
@@ -64,7 +73,7 @@ export default function Projects() {
                   <div className="lg:col-span-7">
                     <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brass">{phase.name}</p>
                     <h2 className="mt-2 font-display text-3xl font-semibold text-navy">{story.title}</h2>
-                    <RichCopy value={story.body} paragraphs={story.paragraphs} className="mt-4 text-lg leading-relaxed text-muted" />
+                    <RichCopy value={story.body} className="mt-4 text-lg leading-relaxed text-muted" />
                   </div>
                 </article>
               ))}

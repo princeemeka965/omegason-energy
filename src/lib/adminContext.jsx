@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import { invalidateCatalog, invalidatePhases } from './api'
+import { invalidateCatalog, invalidatePhases, invalidatePosts } from './api'
 import {
   cancelAccountChange,
   confirmAccountChange,
@@ -7,6 +7,9 @@ import {
   createPhase,
   deleteCategory,
   deletePhase,
+  deletePost,
+  getPost,
+  savePost,
   deleteProduct,
   deleteQuote,
   deleteStory,
@@ -38,6 +41,7 @@ const EMPTY = {
   settings: { quotesEmail: '' },
   account: { name: '', email: '' },
   phases: [],
+  posts: [],
 }
 
 export function AdminProvider({ children }) {
@@ -55,6 +59,7 @@ export function AdminProvider({ children }) {
       settings: data.settings,
       account: data.account || { name: '', email: session?.email || '' },
       phases: data.phases || [],
+      posts: data.posts || [],
     }))
   }, [])
 
@@ -68,6 +73,7 @@ export function AdminProvider({ children }) {
       settings: data.settings,
       account: data.account || current.account,
       phases: data.phases || [],
+      posts: data.posts || [],
     }))
     return data
   }, [])
@@ -170,6 +176,18 @@ export function AdminProvider({ children }) {
       moveStory: async (id, direction) => {
         await moveStory(id, direction)
         invalidatePhases()
+        await refresh()
+      },
+      getPost: (id) => getPost(id),
+      savePost: async (input, id) => {
+        const post = await savePost(input, id)
+        invalidatePosts()
+        await refresh()
+        return post
+      },
+      deletePost: async (id) => {
+        await deletePost(id)
+        invalidatePosts()
         await refresh()
       },
       markQuoteRead: async (id) => {

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { Check } from 'lucide-react'
 import ProductCard, { ProductImage } from '../components/ProductCard'
+import OfflineNote from '../components/OfflineNote'
 import QuoteModal from '../components/QuoteModal'
 import Seo from '../components/Seo'
 import NotFound from './NotFound'
@@ -12,11 +12,12 @@ import { isEmptyHtml, plainText } from '../lib/text'
 
 export default function ProductDetail() {
   const { slug } = useParams()
-  const { product, loading } = useProduct(slug)
+  const { product, loading, error, offline } = useProduct(slug)
   const { products } = useProducts()
   const [quoteOpen, setQuoteOpen] = useState(false)
 
   if (loading && !product) return <div className="min-h-[50vh] bg-paper px-6 py-20 text-muted md:px-10">Loading product…</div>
+  if (error) return <div role="alert" className="min-h-[50vh] bg-paper px-6 py-20 text-muted md:px-10">This product could not be loaded. Check your connection and refresh the page.</div>
   if (!product) return <NotFound message="We could not find that product." backTo="/products" backLabel="Back to products" />
 
   const categoryName = categoryLabel(product.category)
@@ -57,6 +58,7 @@ export default function ProductDetail() {
       />
       <section className="bg-white px-6 py-10 md:px-10 md:py-14">
         <div className="mx-auto max-w-7xl">
+          <OfflineNote show={offline} className="mb-6" />
           <nav aria-label="Breadcrumb" className="mb-8 text-sm text-muted">
             <Link to="/products" className="hover:text-navy">Products</Link>
             <span aria-hidden="true"> / </span>
@@ -68,7 +70,7 @@ export default function ProductDetail() {
             </div>
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.12em] text-brass">
-                {categoryName}{product.sample ? ' · Sample listing' : ''}
+                {categoryName}
               </p>
               <h1 className="mt-2 font-display text-4xl font-semibold leading-tight text-navy">{product.name}</h1>
               {!isEmptyHtml(product.descriptionHtml) ? (
@@ -81,34 +83,13 @@ export default function ProductDetail() {
                 <button type="button" className="btn btn-primary" onClick={() => setQuoteOpen(true)}>Request a quote</button>
               </div>
               {quoteOpen && <QuoteModal product={product} onClose={() => setQuoteOpen(false)} />}
-              {product.features?.length > 0 && (
-                <ul className="mt-8 space-y-3">
-                  {product.features.map((f) => (
-                    <li key={f} className="flex gap-3 text-ink">
-                      <Check size={18} className="mt-0.5 shrink-0 text-brass" aria-hidden="true" />{f}
-                    </li>
-                  ))}
-                </ul>
-              )}
             </div>
           </div>
 
-          {!isEmptyHtml(product.specificationsHtml) ? (
+          {!isEmptyHtml(product.specificationsHtml) && (
             <div className="mt-14 border border-line">
               <h2 className="border-b border-line bg-paper px-5 py-4 font-display text-xl font-semibold text-navy">Specifications</h2>
               <div className="rich-copy px-5 py-4" dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.specificationsHtml) }} />
-            </div>
-          ) : product.specs?.length > 0 && (
-            <div className="mt-14 border border-line">
-              <h2 className="border-b border-line bg-paper px-5 py-4 font-display text-xl font-semibold text-navy">Specifications</h2>
-              <dl>
-                {product.specs.map((s) => (
-                  <div key={s.label} className="grid gap-1 border-b border-line px-5 py-3 last:border-b-0 sm:grid-cols-3">
-                    <dt className="text-sm text-muted">{s.label}</dt>
-                    <dd className="sm:col-span-2">{s.value}</dd>
-                  </div>
-                ))}
-              </dl>
             </div>
           )}
         </div>

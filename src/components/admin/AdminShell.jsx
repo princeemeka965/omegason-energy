@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import { Inbox, Layers, LogOut, Menu, Package, Settings, Sun, Tags, X } from 'lucide-react'
+import { Inbox, Layers, LogOut, Menu, Newspaper, Package, Settings, Sun, Tags, X } from 'lucide-react'
 import Logo from '../Logo'
 import Seo from '../Seo'
 import { useAdmin } from '../../lib/adminContext'
@@ -9,6 +9,7 @@ const links = [
   { to: '/auth/admin/products', label: 'Products', icon: Package },
   { to: '/auth/admin/categories', label: 'Categories', icon: Tags },
   { to: '/auth/admin/phases', label: 'Phases', icon: Layers },
+  { to: '/auth/admin/blog', label: 'Blog', icon: Newspaper },
   { to: '/auth/admin/quotes', label: 'Quotes', icon: Inbox },
   { to: '/auth/admin/sizing', label: 'Solar sizing', icon: Sun },
   { to: '/auth/admin/settings', label: 'Settings', icon: Settings },

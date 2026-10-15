@@ -200,7 +200,7 @@ export default function SolarQuoteModal({ onClose }) {
           <div className="flex min-h-0 flex-1 flex-col justify-center overflow-y-auto px-5 py-10 pb-[max(2.5rem,env(safe-area-inset-bottom))] md:px-8">
             <CheckCircle2 className="text-brass" size={36} aria-hidden="true" />
             <h3 className="mt-4 font-display text-3xl font-semibold text-navy">Quote request sent</h3>
-            <p className="mt-2 max-w-md text-muted">Thank you. Our team will contact you soon. For anything urgent, call {site.mobile}.</p>
+            <p className="mt-2 max-w-md text-muted">Thank you. Our team will contact you soon by email at <span className="font-semibold text-navy">{email}</span>. For anything urgent, call {site.mobile}.</p>
             <button type="button" onClick={onClose} className="btn btn-primary mt-6 w-fit">Close</button>
           </div>
         ) : (

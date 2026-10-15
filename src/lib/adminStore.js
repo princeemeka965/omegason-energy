@@ -138,6 +138,19 @@ export function moveStory(id, direction) {
   return request(`/api/stories/${encodeURIComponent(id)}/move`, { method: 'POST', body: { direction } })
 }
 
+export function getPost(id) {
+  return request(`/api/admin/posts/${encodeURIComponent(id)}`)
+}
+
+export function savePost(input, id) {
+  if (id) return request(`/api/admin/posts/${encodeURIComponent(id)}`, { method: 'PUT', body: input })
+  return request('/api/admin/posts', { method: 'POST', body: input })
+}
+
+export function deletePost(id) {
+  return request(`/api/admin/posts/${encodeURIComponent(id)}`, { method: 'DELETE' })
+}
+
 export function requestAccountChange(input) {
   return request('/api/settings/account', { method: 'POST', body: input })
 }

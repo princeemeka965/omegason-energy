@@ -5,6 +5,8 @@ import CategoriesPage from './CategoriesPage'
 import LoginPage from './LoginPage'
 import PhaseFormPage from './PhaseFormPage'
 import PhasesPage from './PhasesPage'
+import PostFormPage from './PostFormPage'
+import PostsPage from './PostsPage'
 import ProductFormPage from './ProductFormPage'
 import ProductsPage from './ProductsPage'
 import QuotesPage from './QuotesPage'
@@ -45,6 +47,9 @@ function AdminRouter() {
         <Route path="/auth/admin/categories" element={<CategoriesPage />} />
         <Route path="/auth/admin/phases/:id" element={<PhaseFormPage />} />
         <Route path="/auth/admin/phases" element={<PhasesPage />} />
+        <Route path="/auth/admin/blog/new" element={<PostFormPage />} />
+        <Route path="/auth/admin/blog/:id" element={<PostFormPage />} />
+        <Route path="/auth/admin/blog" element={<PostsPage />} />
         <Route path="/auth/admin/quotes" element={<QuotesPage />} />
         <Route path="/auth/admin/sizing" element={<SizingQuotesPage />} />
         <Route path="/auth/admin/settings" element={<SettingsPage />} />

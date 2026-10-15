@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useState } from 'react'
 import Pager from '../../components/admin/Pager'
+import QuoteReplyForm from '../../components/admin/QuoteReplyForm'
 import { useAdmin } from '../../lib/adminContext'
 import { formatWhen, isSizingQuote } from '../../lib/adminStore'
 
 const PAGE_SIZE = 8
 
 export default function SizingQuotesPage() {
-  const { quotes: allQuotes, markQuoteRead, deleteQuote, replyToQuote } = useAdmin()
+  const { quotes: allQuotes, markQuoteRead, deleteQuote } = useAdmin()
   const quotes = useMemo(() => allQuotes.filter((quote) => isSizingQuote(quote)), [allQuotes])
   const unreadQuotes = quotes.filter((quote) => !quote.read).length
   const [error, setError] = useState('')
@@ -15,9 +16,6 @@ export default function SizingQuotesPage() {
   const [page, setPage] = useState(1)
   const [openId, setOpenId] = useState(null)
   const [removingId, setRemovingId] = useState('')
-  const [reply, setReply] = useState('')
-  const [replyNote, setReplyNote] = useState(null)
-  const [sendingId, setSendingId] = useState('')
 
   useEffect(() => {
     setPage(1)
@@ -39,8 +37,6 @@ export default function SizingQuotesPage() {
   function toggle(quote) {
     const next = openId === quote.id ? null : quote.id
     setOpenId(next)
-    setReply('')
-    setReplyNote(null)
     setError('')
     if (next && !quote.read) {
       markQuoteRead(quote.id).catch((err) => setError(err.message))
@@ -110,53 +106,7 @@ export default function SizingQuotesPage() {
                         )}
                       </dl>
                       <p className="mt-4 whitespace-pre-wrap text-sm leading-relaxed text-ink">{quote.message}</p>
-                      {quote.reply && (
-                        <div className="mt-4 border border-line bg-white px-4 py-3">
-                          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brass">Reply sent {formatWhen(quote.repliedAt)}</p>
-                          <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-ink">{quote.reply}</p>
-                        </div>
-                      )}
-                      <form
-                        className="mt-4"
-                        onSubmit={async (event) => {
-                          event.preventDefault()
-                          setSendingId(quote.id)
-                          setReplyNote(null)
-                          setError('')
-                          try {
-                            const result = await replyToQuote(quote.id, reply)
-                            setReply('')
-                            setReplyNote(result.emailed
-                              ? { sent: true, text: `Sent to ${quote.email}.` }
-                              : { sent: false, text: result.emailError || 'The reply is saved. The email did not go out.' })
-                          } catch (err) {
-                            setError(err.message)
-                          } finally {
-                            setSendingId('')
-                          }
-                        }}
-                      >
-                        <label className="block text-sm font-semibold text-navy">
-                          {quote.reply ? 'Send another reply' : 'Reply'}
-                          <textarea
-                            required
-                            minLength={10}
-                            maxLength={4000}
-                            rows={5}
-                            value={reply}
-                            onChange={(event) => setReply(event.target.value)}
-                            className="field font-normal"
-                            placeholder="Write what this house should install."
-                          />
-                        </label>
-                        {replyNote?.sent && <p className="mt-3 text-sm text-navy">{replyNote.text}</p>}
-                        {replyNote && !replyNote.sent && (
-                          <p role="alert" className="mt-3 border border-red-200 bg-red-50 p-3 text-sm text-red-900">{replyNote.text}</p>
-                        )}
-                        <button type="submit" className="btn btn-primary mt-3" disabled={sendingId === quote.id} aria-busy={sendingId === quote.id}>
-                          {sendingId === quote.id ? 'Sending…' : 'Send reply'}
-                        </button>
-                      </form>
+                      <QuoteReplyForm key={quote.id} quote={quote} placeholder="Write what this house should install." />
                       <button
                         type="button"
                         className="mt-4 text-sm font-semibold text-red-800 disabled:cursor-wait disabled:opacity-60"

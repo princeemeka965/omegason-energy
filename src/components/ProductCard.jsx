@@ -29,9 +29,6 @@ export default function ProductCard({ product }) {
       <Link to={`/products/${product.slug}`} className="block">
         <div className="relative aspect-[4/3] overflow-hidden bg-paper">
           <ProductImage product={product} />
-          {product.sample && (
-            <span className="absolute top-3 left-3 bg-navy px-2 py-1 text-xs font-semibold text-white">Sample listing</span>
-          )}
         </div>
       </Link>
       <div className="flex flex-1 flex-col p-5">
