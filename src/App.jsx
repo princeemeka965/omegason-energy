@@ -9,6 +9,7 @@ import { fetchSite } from './lib/api'
 import Home from './pages/Home'
 
 const About = lazy(() => import('./pages/About'))
+const Leadership = lazy(() => import('./pages/Leadership'))
 const Services = lazy(() => import('./pages/Services'))
 const Products = lazy(() => import('./pages/Products'))
 const ProductDetail = lazy(() => import('./pages/ProductDetail'))
@@ -68,6 +69,7 @@ export default function App() {
             <Routes location={location}>
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<About />} />
+              <Route path="/leadership" element={<Leadership />} />
               <Route path="/services" element={<Services />} />
               <Route path="/products" element={<Products />} />
               <Route path="/products/:slug" element={<ProductDetail />} />

@@ -4,9 +4,9 @@ export const site = {
   name: 'Omegason Integrated Energy Services',
   short: 'Omegason',
   phone: '+234 9025932104',
-  mobile: '+234 7034867694',
+  mobile: '+234 806 249 8123',
   fax: '+234 8072222271',
-  whatsapp: '2347034867694',
+  whatsapp: '2348062498123',
   email: '',
   website: 'https://www.omegasonenergy.org',
   url: 'https://www.omegasonenergy.org',
@@ -190,15 +190,15 @@ export const divisions = [
 export const team = [
   {
     name: 'Sir Marcellius Eleanya Nwonu',
-    role: 'Chairman',
+    role: 'Chairman / Chief Executive Director',
     image: '/team/nwonu.jpg',
     bio: 'Sir Marcellius Eleanya Nwonu is a renowned entrepreneur, educationist and a philanthropist. He is the founder and chairman of Omega Group of Companies Ltd with major interest in agriculture, food processing, energy and real estate. He is a chartered accountant and holds a doctorate degree in management. In addition, he holds a master’s degree in law, economics and agricultural sciences. He is also a member of many professional bodies, including the Institute of Chartered Accountants, Nigerian Institute of Management, Nigeria Economic Society, and the African Technology Policy Studies Network, UK. He has been honoured with many ecclesiastical and chieftaincy titles, including the Knight of the Order of Wesley (KJW), the Idejimba of Oduma and Onowo of Obeagu Oduma Ancient Kingdom. He attended numerous colleges and institutions in Nigeria and overseas, including St. Finbarr’s College, Akoka, Federal School of Arts & Science, Victoria Island, University of Lagos, London South Bank University, Birkbeck University, City University, Lancaster University and the Royal Agricultural University, Cirencester, where he received degrees and certificates with distinction. He has worked at top management levels in Nigeria, the United Kingdom and the Czech Republic, and serves on the boards of companies including Oduma Multi-purpose Farms Ltd, Prima and Company Ltd, Omega Properties Ltd, Maliz & Company Ltd, Nne Agro Allied Foods Ltd, Omegason Integrated Energy Services Ltd and Arthur Marcel Accountancy Ltd.',
   },
   {
     name: 'Comrade Marcelo Anyigor',
-    role: 'Chief Executive Officer',
+    role: 'Director (Special Operations)',
     image: '/team/anyigor.jpg',
-    bio: 'Comrade Marcelo Anyigor is a versatile, dynamic and dependable personality, a seasoned professional with high managerial acumen. As Chief Executive Officer of Omegason Integrated Energy Services Limited, he has always been strategic in policy formation and human resources management. Following his highly productive stint in private business outfits such as Deal Banter Limited, he garnered experience and business networking skills across sectors of the economy. Based on his forthrightness, integrity and quality service delivery, he became a household name in the rubber supply chain of the nation’s agricultural sector. He is Country Executive Director of Agile Without Borders, an international consulting firm with offices in the United Kingdom, Canada and Nigeria, and West Africa Associate Partner at Polaris Triton Group.',
+    bio: 'Comrade Marcelo Anyigor is a versatile, dynamic and dependable personality, a seasoned professional with high managerial acumen. As Director (Special Operations) of Omegason Integrated Energy Services Limited, he has always been strategic in policy formation and human resources management. Following his highly productive stint in private business outfits such as Deal Banter Limited, he garnered experience and business networking skills across sectors of the economy. Based on his forthrightness, integrity and quality service delivery, he became a household name in the rubber supply chain of the nation’s agricultural sector. He is Country Executive Director of Agile Without Borders, an international consulting firm with offices in the United Kingdom, Canada and Nigeria, and West Africa Associate Partner at Polaris Triton Group.',
   },
   {
     name: 'Ms. Echegwo Favour',
@@ -214,7 +214,7 @@ export const team = [
   },
   {
     name: 'Mr Kalu U. Kalu',
-    role: 'Chief Operating Officer',
+    role: 'Director (Technical)',
     image: null,
     bio: '',
   },

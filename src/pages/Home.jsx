@@ -14,7 +14,10 @@ function SectionLabel({ children }) {
 export default function Home() {
   const { products } = useProducts()
   const { phases } = usePhases()
-  const featured = products.filter((p) => p.featured).slice(0, 3)
+  const homeProducts = [
+    ...products.filter((product) => product.featured),
+    ...products.filter((product) => !product.featured),
+  ].slice(0, 6)
   const phase = homePhase(phases)
   const stories = homeStories(phase)
 
@@ -26,6 +29,23 @@ export default function Home() {
         path="/"
       />
       <Hero />
+
+      {homeProducts.length > 0 && (
+        <section className="border-b border-line bg-white px-6 py-20 md:px-10">
+          <div className="mx-auto max-w-7xl">
+            <div className="flex flex-wrap items-end justify-between gap-6">
+              <div>
+                <SectionLabel>Products</SectionLabel>
+                <h2 className="mt-3 font-display text-3xl font-semibold text-navy md:text-4xl">Solar equipment</h2>
+              </div>
+              <Link to="/products" className="btn btn-outline">View all products</Link>
+            </div>
+            <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {homeProducts.map((p) => <ProductCard key={p.slug} product={p} />)}
+            </div>
+          </div>
+        </section>
+      )}
 
       <section className="border-b border-line bg-white">
         <div className="mx-auto grid max-w-7xl divide-y divide-line px-6 md:grid-cols-3 md:divide-x md:divide-y-0 md:px-10">
@@ -125,23 +145,6 @@ export default function Home() {
               ))}
             </div>
             <Link to="/projects" className="btn btn-primary mt-8">Read the project notes</Link>
-          </div>
-        </section>
-      )}
-
-      {featured.length > 0 && (
-        <section className="bg-white px-6 py-20 md:px-10">
-          <div className="mx-auto max-w-7xl">
-            <div className="flex flex-wrap items-end justify-between gap-6">
-              <div>
-                <SectionLabel>Products</SectionLabel>
-                <h2 className="mt-3 font-display text-3xl font-semibold text-navy md:text-4xl">Solar equipment</h2>
-              </div>
-              <Link to="/products" className="btn btn-outline">View all products</Link>
-            </div>
-            <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {featured.map((p) => <ProductCard key={p.slug} product={p} />)}
-            </div>
           </div>
         </section>
       )}

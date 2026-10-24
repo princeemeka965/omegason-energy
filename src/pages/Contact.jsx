@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom'
 import { CheckCircle2, MessageCircle, Phone } from 'lucide-react'
 import PageHeader from '../components/PageHeader'
 import Seo from '../components/Seo'
-import { offices, site, team } from '../data/site'
+import { offices, site } from '../data/site'
 import { addQuote, isQuoteRequest } from '../lib/adminStore'
 import { useProducts } from '../lib/api'
 
@@ -61,7 +61,7 @@ export default function Contact() {
     <>
       <Seo
         title="Contact Omegason"
-        description="Contact Omegason Integrated Energy Services. Head office: 180 Agbani Road, Enugu, Nigeria. Phone +234 9025932104. Mobile +234 7034867694."
+        description="Contact Omegason Integrated Energy Services. Head office: 180 Agbani Road, Enugu, Nigeria. Phone +234 9025932104. Mobile +234 806 249 8123."
         path="/contact"
         jsonLd={{
           '@context': 'https://schema.org',
@@ -148,25 +148,6 @@ export default function Contact() {
               Call the head office on {site.phone}
             </p>
           </aside>
-        </div>
-
-        <div className="mx-auto mt-16 max-w-7xl border-t border-line pt-12">
-          <h2 className="font-display text-2xl font-semibold text-navy">Leadership</h2>
-          <ul className="mt-8 grid gap-8 sm:grid-cols-2 lg:grid-cols-5">
-            {team.map((person) => (
-              <li key={person.name} className="text-center">
-                {person.image ? (
-                  <img src={person.image} alt={person.name} className="mx-auto h-28 w-28 rounded-full object-cover object-top" />
-                ) : (
-                  <div className="mx-auto grid h-28 w-28 place-items-center rounded-full bg-navy font-display text-2xl font-semibold text-white">
-                    {person.name.split(' ').filter((w) => w.length > 2).slice(0, 2).map((w) => w[0]).join('')}
-                  </div>
-                )}
-                <h3 className="mt-4 font-semibold text-navy">{person.name}</h3>
-                <p className="mt-1 text-sm text-muted">{person.role}</p>
-              </li>
-            ))}
-          </ul>
         </div>
       </section>
     </>

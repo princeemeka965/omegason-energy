@@ -61,7 +61,7 @@ export default function Services() {
       <section className="bg-navy px-6 py-14 text-white md:px-10">
         <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-6 md:flex-row md:items-center">
           <h2 className="max-w-xl font-display text-3xl font-semibold">Tell us what you need to power.</h2>
-          <Link to="/contact" className="btn btn-light">Contact our team</Link>
+          <Link to="/leadership" className="btn btn-light">Meet our team</Link>
         </div>
       </section>
     </>

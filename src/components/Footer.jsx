@@ -26,7 +26,7 @@ export default function Footer() {
         <div className="md:col-span-2">
           <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-brass-soft">Explore</h2>
           <ul className="mt-4 space-y-2 text-sm text-white/75">
-            {[['/about', 'About'], ['/services', 'Services'], ['/products', 'Products'], ['/projects', 'Projects'], ['/blog', 'Blog'], ['/contact', 'Contact']].map(([to, label]) => (
+            {[['/about', 'About'], ['/leadership', 'Leadership'], ['/services', 'Services'], ['/products', 'Products'], ['/projects', 'Projects'], ['/blog', 'Blog'], ['/contact', 'Contact']].map(([to, label]) => (
               <li key={to}><Link className="hover:text-white" to={to}>{label}</Link></li>
             ))}
           </ul>

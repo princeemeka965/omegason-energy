@@ -9,10 +9,10 @@ import { site } from '../data/site'
 const links = [
   { to: '/', label: 'Home' },
   { to: '/about', label: 'About' },
+  { to: '/leadership', label: 'Leadership' },
   { to: '/services', label: 'Services' },
   { to: '/products', label: 'Products' },
   { to: '/projects', label: 'Projects' },
-  { to: '/blog', label: 'Blog' },
   { to: '/contact', label: 'Contact' },
 ]
 
@@ -54,7 +54,7 @@ export default function Navbar() {
                 to={l.to}
                 end={l.to === '/'}
                 className={({ isActive }) =>
-                  `border-b-2 px-3 py-5 text-sm font-semibold ${
+                  `border-b-2 px-2.5 py-5 text-sm font-semibold ${
                     isActive ? 'border-brass text-navy' : 'border-transparent text-muted hover:text-navy'
                   }`
                 }
