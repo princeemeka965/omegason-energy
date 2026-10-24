@@ -9,6 +9,7 @@ import PostFormPage from './PostFormPage'
 import PostsPage from './PostsPage'
 import ProductFormPage from './ProductFormPage'
 import ProductsPage from './ProductsPage'
+import MessagesPage from './MessagesPage'
 import QuotesPage from './QuotesPage'
 import SettingsPage from './SettingsPage'
 import SizingQuotesPage from './SizingQuotesPage'
@@ -50,6 +51,7 @@ function AdminRouter() {
         <Route path="/auth/admin/blog/new" element={<PostFormPage />} />
         <Route path="/auth/admin/blog/:id" element={<PostFormPage />} />
         <Route path="/auth/admin/blog" element={<PostsPage />} />
+        <Route path="/auth/admin/messages" element={<MessagesPage />} />
         <Route path="/auth/admin/quotes" element={<QuotesPage />} />
         <Route path="/auth/admin/sizing" element={<SizingQuotesPage />} />
         <Route path="/auth/admin/settings" element={<SettingsPage />} />

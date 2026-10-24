@@ -58,6 +58,10 @@ export function isSizingQuote(quote) {
   return quote?.kind === 'sizing' || quote?.productName === 'Home solar sizing'
 }
 
+export function isContactMessage(quote) {
+  return quote?.kind === 'general'
+}
+
 export function isQuoteRequest({ subject, productSlug }) {
   if (String(productSlug || '').trim()) return true
   return /quote/i.test(subject || '')

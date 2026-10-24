@@ -4,7 +4,7 @@ import { CheckCircle2, MessageCircle, Phone } from 'lucide-react'
 import PageHeader from '../components/PageHeader'
 import Seo from '../components/Seo'
 import { offices, site } from '../data/site'
-import { addQuote, isQuoteRequest } from '../lib/adminStore'
+import { addQuote } from '../lib/adminStore'
 import { useProducts } from '../lib/api'
 
 export default function Contact() {
@@ -25,34 +25,26 @@ export default function Contact() {
     const fields = Object.fromEntries(data)
     if (fields['bot-field']) return
     const productSlug = wanted?.slug || fields.product || ''
-    const quote = isQuoteRequest({ subject: fields.subject, productSlug })
-    if (quote) {
-      try {
-        await addQuote({
-          name: fields.name,
-          email: fields.email,
-          subject: fields.subject,
-          message: fields.message,
-          productSlug,
-          productName: wanted?.name || '',
-        })
-      } catch {
-        setStatus('error')
-        return
-      }
-    }
     try {
-      const res = await fetch('/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({ 'form-name': 'contact', ...fields }).toString(),
+      await addQuote({
+        name: fields.name,
+        email: fields.email,
+        subject: fields.subject,
+        message: fields.message,
+        productSlug,
+        productName: wanted?.name || '',
       })
-      if (!res.ok) throw new Error('Request failed')
-      setStatus('sent')
     } catch {
-      if (quote) setStatus('sent')
-      else setStatus('error')
+      setStatus('error')
+      return
     }
+    // A copy still goes to Netlify Forms on the deployed site. The local preview has no such endpoint.
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ 'form-name': 'contact', ...fields }).toString(),
+    }).catch(() => {})
+    setStatus('sent')
   }
 
   const tel = (n) => `tel:${n.replace(/\s/g, '')}`
@@ -112,7 +104,7 @@ export default function Contact() {
                 </label>
                 {status === 'error' && (
                   <p role="alert" className="mt-4 border border-red-200 bg-red-50 p-4 text-sm text-red-900">
-                    The message did not send. Check your connection and try again, or call {site.mobile}. This form works on the deployed Netlify site, not the local preview.
+                    The message did not send. Check your connection and try again, or call {site.mobile}.
                   </p>
                 )}
                 <button type="submit" disabled={status === 'sending'} aria-busy={status === 'sending'} className="btn btn-primary mt-6">

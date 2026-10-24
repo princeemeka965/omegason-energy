@@ -14,6 +14,7 @@ import {
   deleteQuote,
   deleteStory,
   getSession,
+  isContactMessage,
   isSizingQuote,
   loadDashboard,
   logoutAdmin,
@@ -219,9 +220,10 @@ export function AdminProvider({ children }) {
   }, [applyDashboard, refresh])
 
   const value = useMemo(() => {
-    const unreadQuotes = state.quotes.filter((quote) => !isSizingQuote(quote) && !quote.read).length
+    const unreadQuotes = state.quotes.filter((quote) => !isSizingQuote(quote) && !isContactMessage(quote) && !quote.read).length
+    const unreadMessages = state.quotes.filter((quote) => isContactMessage(quote) && !quote.read).length
     const unreadSizing = state.quotes.filter((quote) => isSizingQuote(quote) && !quote.read).length
-    return { ...state, unreadQuotes, unreadSizing, ...actions }
+    return { ...state, unreadQuotes, unreadMessages, unreadSizing, ...actions }
   }, [state, actions])
 
   return <AdminContext.Provider value={value}>{children}</AdminContext.Provider>

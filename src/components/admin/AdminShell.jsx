@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import { Inbox, Layers, LogOut, Menu, Newspaper, Package, Settings, Sun, Tags, X } from 'lucide-react'
+import { Inbox, Layers, LogOut, Mail, Menu, Newspaper, Package, Settings, Sun, Tags, X } from 'lucide-react'
 import Logo from '../Logo'
 import Seo from '../Seo'
 import { useAdmin } from '../../lib/adminContext'
@@ -10,13 +10,14 @@ const links = [
   { to: '/auth/admin/categories', label: 'Categories', icon: Tags },
   { to: '/auth/admin/phases', label: 'Phases', icon: Layers },
   { to: '/auth/admin/blog', label: 'Blog', icon: Newspaper },
+  { to: '/auth/admin/messages', label: 'Messages', icon: Mail },
   { to: '/auth/admin/quotes', label: 'Quotes', icon: Inbox },
   { to: '/auth/admin/sizing', label: 'Solar sizing', icon: Sun },
   { to: '/auth/admin/settings', label: 'Settings', icon: Settings },
 ]
 
 export default function AdminShell({ children }) {
-  const { session, logoutAdmin, unreadQuotes, unreadSizing, settings } = useAdmin()
+  const { session, logoutAdmin, unreadMessages, unreadQuotes, unreadSizing, settings } = useAdmin()
   const [open, setOpen] = useState(false)
   const [signingOut, setSigningOut] = useState(false)
   const [desktop, setDesktop] = useState(() => window.matchMedia('(min-width: 1024px)').matches)
@@ -70,6 +71,9 @@ export default function AdminShell({ children }) {
                   >
                     <Icon size={18} aria-hidden="true" />
                     {link.label}
+                    {link.to.endsWith('/messages') && unreadMessages > 0 && (
+                      <span className="ml-auto bg-brass px-1.5 py-0.5 text-xs text-white">{unreadMessages}</span>
+                    )}
                     {link.to.endsWith('/quotes') && unreadQuotes > 0 && (
                       <span className="ml-auto bg-brass px-1.5 py-0.5 text-xs text-white">{unreadQuotes}</span>
                     )}
@@ -85,7 +89,8 @@ export default function AdminShell({ children }) {
         <div className="border-t border-white/10 p-4">
           <p className="truncate text-sm text-white/80">{session?.email}</p>
           <p className="mt-1 text-xs text-white/55">
-            {settings.quotesEmail ? `Quotes go to ${settings.quotesEmail}` : 'Set a quotes inbox under Settings'}
+            Contact messages go to omegasonenergy@gmail.com
+            {settings.quotesEmail ? ` · Quotes go to ${settings.quotesEmail}` : ' · Set a quotes inbox under Settings'}
           </p>
           <button
             type="button"

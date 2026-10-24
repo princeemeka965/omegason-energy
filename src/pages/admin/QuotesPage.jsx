@@ -2,13 +2,13 @@ import { useEffect, useMemo, useState } from 'react'
 import Pager from '../../components/admin/Pager'
 import QuoteReplyForm from '../../components/admin/QuoteReplyForm'
 import { useAdmin } from '../../lib/adminContext'
-import { formatWhen, isSizingQuote } from '../../lib/adminStore'
+import { formatWhen, isContactMessage, isSizingQuote } from '../../lib/adminStore'
 
 const PAGE_SIZE = 8
 
 export default function QuotesPage() {
   const { quotes: allQuotes, markQuoteRead, deleteQuote } = useAdmin()
-  const quotes = useMemo(() => allQuotes.filter((quote) => !isSizingQuote(quote)), [allQuotes])
+  const quotes = useMemo(() => allQuotes.filter((quote) => !isSizingQuote(quote) && !isContactMessage(quote)), [allQuotes])
   const unreadQuotes = quotes.filter((quote) => !quote.read).length
   const [error, setError] = useState('')
   const [filter, setFilter] = useState('all')
@@ -47,7 +47,7 @@ export default function QuotesPage() {
       <p className="text-sm font-semibold uppercase tracking-[0.14em] text-brass">Inbox</p>
       <h1 className="mt-1 font-display text-3xl font-semibold text-navy">Quote requests</h1>
       <p className="mt-2 max-w-2xl text-sm text-muted">
-        Product and contact requests are stored here. Solar sizing requests have their own page. The address they are sent to is set under Settings. A reply to a product request is emailed to the customer with the product photo.
+        Product quote requests are stored here. Contact messages and solar sizing requests have their own pages. The address quote requests are sent to is set under Settings. A reply to a product request is emailed to the customer with the product photo.
       </p>
       {error && <p role="alert" className="mt-4 border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-900">{error}</p>}
 
