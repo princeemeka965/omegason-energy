@@ -215,7 +215,31 @@ export const team = [
   {
     name: 'Mr Kalu U. Kalu',
     role: 'Director (Technical)',
-    image: null,
+    image: '/team/kalu.jpg',
+    bio: '',
+  },
+  {
+    name: 'Mr Chimezie Alicho',
+    role: 'Technical Sales Executive',
+    image: '/team/alicho.jpg',
+    bio: '',
+  },
+  {
+    name: 'Mr Akaa Kress Akaa',
+    role: 'Technical Sales Executive',
+    image: '/team/akaa.png',
+    bio: '',
+  },
+  {
+    name: 'Mr Fidelis Nwankwo',
+    role: 'Technical Sales Executive',
+    image: '/team/nwankwo.png',
+    bio: '',
+  },
+  {
+    name: 'Miss Esther Akpa',
+    role: 'Secretary',
+    image: '/team/akpa.png',
     bio: '',
   },
 ]
