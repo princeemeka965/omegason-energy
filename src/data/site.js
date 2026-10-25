@@ -190,7 +190,7 @@ export const divisions = [
 export const team = [
   {
     name: 'Sir Marcellius Eleanya Nwonu',
-    role: 'Chairman / Chief Executive Director',
+    role: 'Chairman/Chief Executive Officer',
     image: '/team/nwonu.jpg',
     bio: 'Sir Marcellius Eleanya Nwonu is a renowned entrepreneur, educationist and a philanthropist. He is the founder and chairman of Omega Group of Companies Ltd with major interest in agriculture, food processing, energy and real estate. He is a chartered accountant and holds a doctorate degree in management. In addition, he holds a master’s degree in law, economics and agricultural sciences. He is also a member of many professional bodies, including the Institute of Chartered Accountants, Nigerian Institute of Management, Nigeria Economic Society, and the African Technology Policy Studies Network, UK. He has been honoured with many ecclesiastical and chieftaincy titles, including the Knight of the Order of Wesley (KJW), the Idejimba of Oduma and Onowo of Obeagu Oduma Ancient Kingdom. He attended numerous colleges and institutions in Nigeria and overseas, including St. Finbarr’s College, Akoka, Federal School of Arts & Science, Victoria Island, University of Lagos, London South Bank University, Birkbeck University, City University, Lancaster University and the Royal Agricultural University, Cirencester, where he received degrees and certificates with distinction. He has worked at top management levels in Nigeria, the United Kingdom and the Czech Republic, and serves on the boards of companies including Oduma Multi-purpose Farms Ltd, Prima and Company Ltd, Omega Properties Ltd, Maliz & Company Ltd, Nne Agro Allied Foods Ltd, Omegason Integrated Energy Services Ltd and Arthur Marcel Accountancy Ltd.',
   },
@@ -219,6 +219,12 @@ export const team = [
     bio: '',
   },
   {
+    name: 'Mariam Irumekhai',
+    role: 'Company Secretary',
+    image: '/team/irumekhai.jpg',
+    bio: '',
+  },
+  {
     name: 'Mr Chimezie Alicho',
     role: 'Technical Sales Executive',
     image: '/team/alicho.jpg',
@@ -238,7 +244,7 @@ export const team = [
   },
   {
     name: 'Miss Esther Akpa',
-    role: 'Secretary',
+    role: 'Admin Officer',
     image: '/team/akpa.png',
     bio: '',
   },
