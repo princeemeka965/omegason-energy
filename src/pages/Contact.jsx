@@ -53,7 +53,7 @@ export default function Contact() {
     <>
       <Seo
         title="Contact Omegason"
-        description="Contact Omegason Integrated Energy Services. Head office: 180 Agbani Road, Enugu, Nigeria. Phone +234 9025932104. Mobile +234 806 249 8123."
+        description="Contact Omegason Integrated Energy Services. Head office: 180 Agbani Road, Enugu, Nigeria. Email enquiries@omegason.org. Phone +234 9025932104. Mobile +234 806 249 8123."
         path="/contact"
         jsonLd={{
           '@context': 'https://schema.org',
@@ -64,7 +64,7 @@ export default function Contact() {
             '@type': 'Organization',
             name: 'Omegason Integrated Energy Services Ltd',
             telephone: '+2349025932104',
-            email: site.email || undefined,
+            email: site.emails.map((item) => item.address),
           },
         }}
       />
@@ -126,6 +126,20 @@ export default function Contact() {
               <a href={`https://wa.me/${site.whatsapp}`} target="_blank" rel="noreferrer" className="btn btn-outline mt-6">
                 <MessageCircle size={18} aria-hidden="true" /> Chat on WhatsApp
               </a>
+            </div>
+            <div className="border border-line bg-white p-7">
+              <h2 className="font-display text-2xl font-semibold text-navy">Email addresses</h2>
+              <p className="mt-2 text-sm text-muted">Write to the team that matches your request.</p>
+              <dl className="mt-5 space-y-3 text-sm">
+                {site.emails.map((item) => (
+                  <div key={item.address}>
+                    <dt className="font-semibold text-navy">{item.label}</dt>
+                    <dd>
+                      <a className="text-muted hover:text-navy" href={`mailto:${item.address}`}>{item.address}</a>
+                    </dd>
+                  </div>
+                ))}
+              </dl>
             </div>
             <ul className="space-y-4 text-sm">
               {offices.map((o) => (

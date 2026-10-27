@@ -7,7 +7,14 @@ export const site = {
   mobile: '+234 806 249 8123',
   fax: '+234 8072222271',
   whatsapp: '2348062498123',
-  email: '',
+  email: 'enquiries@omegason.org',
+  emails: [
+    { label: 'Enquiries', address: 'enquiries@omegason.org' },
+    { label: 'CEO', address: 'ceo@omegason.org' },
+    { label: 'Sales', address: 'sales@omegason.org' },
+    { label: 'Technical support', address: 'technicalsupport@omegason.org' },
+    { label: 'Accounts', address: 'accounts@omegason.org' },
+  ],
   website: 'https://www.omegasonenergy.org',
   url: 'https://www.omegasonenergy.org',
   social: {

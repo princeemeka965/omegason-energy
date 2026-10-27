@@ -49,7 +49,15 @@ export default function Footer() {
             <li>Phone: <a className="text-white hover:underline" href={`tel:${site.phone.replace(/\s/g, '')}`}>{site.phone}</a></li>
             <li>Mobile: <a className="text-white hover:underline" href={`tel:${site.mobile.replace(/\s/g, '')}`}>{site.mobile}</a></li>
             <li>Fax: {site.fax}</li>
-            {site.email && <li><a className="hover:underline" href={`mailto:${site.email}`}>{site.email}</a></li>}
+          </ul>
+          <h3 className="mt-5 text-sm font-semibold uppercase tracking-[0.14em] text-brass-soft">Email</h3>
+          <ul className="mt-3 space-y-2 text-sm text-white/75">
+            {site.emails.map((item) => (
+              <li key={item.address}>
+                <span className="text-white/55">{item.label}: </span>
+                <a className="text-white hover:underline" href={`mailto:${item.address}`}>{item.address}</a>
+              </li>
+            ))}
           </ul>
           <Link to="/contact" className="btn btn-light mt-6">Contact us</Link>
         </div>

@@ -38,6 +38,7 @@ export default function Navbar() {
         <div className="mx-auto flex h-10 max-w-7xl items-center justify-between px-6 md:px-10">
           <p>Head office · 180 Agbani Road, Enugu</p>
           <p className="flex gap-5">
+            <a className="hover:text-white" href={`mailto:${site.email}`}>{site.email}</a>
             <a className="hover:text-white" href={`tel:${site.phone.replace(/\s/g, '')}`}>{site.phone}</a>
             <a className="hover:text-white" href={`tel:${site.mobile.replace(/\s/g, '')}`}>{site.mobile}</a>
           </p>

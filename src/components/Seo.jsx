@@ -33,6 +33,7 @@ export function organizationJsonLd() {
     image: absolute('/media/hybrid.jpg'),
     description: 'Omegason Integrated Energy Services Ltd welcomes you to a future where clean, reliable, and affordable energy drives communities and businesses forward.',
     telephone: '+2349025932104',
+    email: site.emails.map((item) => item.address),
     faxNumber: '+2348072222271',
     address: {
       '@type': 'PostalAddress',
